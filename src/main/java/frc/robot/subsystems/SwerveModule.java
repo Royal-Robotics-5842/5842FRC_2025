@@ -85,7 +85,8 @@ public class SwerveModule {
 
     public double getDriveVelocity() 
     {
-        return driveEncoder.getVelocity(); //Get velocity based off of encoders (REV does this for us)
+        return driveEncoder.getVelocity();
+        // TESTINGGGGG //Get velocity based off of encoders (REV does this for us)
     }
 
     public void resetEncoders() {
