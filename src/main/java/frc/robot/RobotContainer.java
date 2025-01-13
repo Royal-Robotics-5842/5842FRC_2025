@@ -54,6 +54,11 @@ public class RobotContainer {
       SmartDashboard.putNumber("Robot Pitch", swerveSubsystem.gyro.getPitch());
 
     configureBindings();
+
+    SmartDashboard.putNumber("Turn BL", swerveSubsystem.backLeft.getTurningPosition());
+    SmartDashboard.putNumber("Turn FL", swerveSubsystem.frontLeft.getTurningPosition());
+    SmartDashboard.putNumber("Turn BR", swerveSubsystem.backRight.getTurningPosition());
+    SmartDashboard.putNumber("Turn FR", swerveSubsystem.frontRight.getDrivePosition());
   }
 
   

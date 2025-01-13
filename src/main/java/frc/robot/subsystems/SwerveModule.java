@@ -1,8 +1,11 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
 //import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkRelativeEncoder;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkMax;
@@ -27,7 +30,7 @@ public class SwerveModule {
     private final SparkMax driveMotor; //Defineing motor controller for the drive motor
     private final SparkMax turningMotor; //Defineing motor controller for the turn motor 
 
-    private final RelativeEncoder driveEncoder; //Constructing the relative encoder that is built in with every Neo
+    //private final RelativeEncoder driveEncoder; //Constructing the relative encoder that is built in with every Neo
     public final CANcoder CANabsoluteEncoder; //Constructing the CTRE AbsoluteEncoder that comes with every SparkMaxModule
 
     private final PIDController turningPidController; //Constructing the PID Controller that will allow us to tell the wheel where to spin too
@@ -54,44 +57,50 @@ public class SwerveModule {
             //Converting the encoder values from "rotations" to meters
         driveConfig.encoder.positionConversionFactor(ModuleConstants.kDriveEncoderRot2Meter);
         driveConfig.encoder.velocityConversionFactor(ModuleConstants.kDriveEncoderRPM2MeterPerSec);
-        
+        driveMotor.configure(driveConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         //Turn
         SparkMaxConfig turnConfig = new SparkMaxConfig();
         turnConfig.inverted(turningMotorReversed); 
         turnConfig.idleMode(IdleMode.kCoast);
         turnConfig.smartCurrentLimit(40);
+        turningMotor.configure(driveConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
 //-----------------------------------------------------------------------
         //Setting the variable to a value given from the drive motor encoder (Allowing us to know where we are on the field)
-        driveEncoder = driveMotor.getAlternateEncoder(); //   .getAlternateEncoder();
+        //driveEncoder = driveMotor.getAlternateEncoder(); //   .getAlternateEncoder();
         
         turningPidController = new PIDController(0.007, 0,0); //Creating PID controller for turning
 
         turningPidController.enableContinuousInput(-180, 180); //Making sure that only values from 0-180 are allowed
 
         //CANabsoluteEncoder.configAbsoluteSensorRange(CANabsoluteEncoder.configGetAbsoluteSensorRange()); //Grabbing the configs from the pheonix tuner
-        CANabsoluteEncoder.getConfigurator();
+        //CANabsoluteEncoder.getConfigurator();
+        CANcoderConfiguration toApply = new CANcoderConfiguration();
+
+        /* User can change the configs if they want, or leave it empty for factory-default */
+        CANabsoluteEncoder.getConfigurator().apply(toApply);
 
     }
 
     public double getDrivePosition() 
     {
-        return driveEncoder.getPosition(); //Get encoder value
+        return driveMotor.getEncoder().getPosition(); //Get encoder value
     }
 
     public double getTurningPosition() 
     {
-        return CANabsoluteEncoder.getAbsolutePosition().getValueAsDouble(); //Get encoder value
+        return CANabsoluteEncoder.getPosition().getValueAsDouble()*360; //Get encoder value
     }
 
     public double getDriveVelocity() 
     {
-        return driveEncoder.getVelocity();
+        return driveMotor.getEncoder().getVelocity();
         // TESTINGGGGG //Get velocity based off of encoders (REV does this for us)
     }
 
     public void resetEncoders() {
 
-        //driveEncoder.setPosition(0) ;   //setPosition(0);
+        //driveMotor.getEncoder().setPosition(0);   //setPosition(0);
         CANabsoluteEncoder.setPosition(0);
     }
 
