@@ -1,7 +1,9 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 //import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkRelativeEncoder;
 import com.revrobotics.spark.SparkBase.PersistMode;
@@ -50,7 +52,7 @@ public class SwerveModule {
         //Drive
         SparkMaxConfig driveConfig = new SparkMaxConfig();
         driveConfig
-            .inverted(true)
+            .inverted(driveMotorReversed)
             .idleMode(IdleMode.kCoast);
             //Set Current Limit
         driveConfig.smartCurrentLimit(40);
@@ -75,10 +77,16 @@ public class SwerveModule {
 
         //CANabsoluteEncoder.configAbsoluteSensorRange(CANabsoluteEncoder.configGetAbsoluteSensorRange()); //Grabbing the configs from the pheonix tuner
         //CANabsoluteEncoder.getConfigurator();
-        CANcoderConfiguration toApply = new CANcoderConfiguration();
-
+        
+        var CANcoderConfig = new CANcoderConfiguration();
+        
+        MagnetSensorConfigs magnetCfg = new MagnetSensorConfigs();
+        magnetCfg.withAbsoluteSensorDiscontinuityPoint(0.5);
+        magnetCfg.withSensorDirection(SensorDirectionValue.Clockwise_Positive);
+        
+        CANcoderConfig.withMagnetSensor(magnetCfg);
         /* User can change the configs if they want, or leave it empty for factory-default */
-        CANabsoluteEncoder.getConfigurator().apply(toApply);
+        CANabsoluteEncoder.getConfigurator().apply(CANcoderConfig);
 
     }
 
@@ -89,8 +97,10 @@ public class SwerveModule {
 
     public double getTurningPosition() 
     {
-        return CANabsoluteEncoder.getPosition().getValueAsDouble()*360; //Get encoder value
+        //System.out.println("getTurningPosition: " + CANabsoluteEncoder.getAbsolutePosition().getValueAsDouble());
+        return CANabsoluteEncoder.getAbsolutePosition().getValueAsDouble()*360; //Get encoder value
     }
+    
 
     public double getDriveVelocity() 
     {

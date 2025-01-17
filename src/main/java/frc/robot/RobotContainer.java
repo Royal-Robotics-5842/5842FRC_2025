@@ -47,7 +47,7 @@ public class RobotContainer {
       swerveSubsystem,
       () -> -driverJoytick.getRawAxis(OIConstants.kDriverYAxis),
       () -> -driverJoytick.getRawAxis(OIConstants.kDriverXAxis),
-      () ->  driverJoytick.getRawAxis(OIConstants.kDriverRotAxis),
+      () ->  -driverJoytick.getRawAxis(OIConstants.kDriverRotAxis),
       () -> !m_driverController.y().getAsBoolean()));
      
       SmartDashboard.putBoolean("Field Centric", !m_driverController.y().getAsBoolean());
@@ -59,6 +59,7 @@ public class RobotContainer {
     SmartDashboard.putNumber("Turn FL", swerveSubsystem.frontLeft.getTurningPosition());
     SmartDashboard.putNumber("Turn BR", swerveSubsystem.backRight.getTurningPosition());
     SmartDashboard.putNumber("Turn FR", swerveSubsystem.frontRight.getDrivePosition());
+
   }
 
   
