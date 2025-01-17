@@ -78,17 +78,17 @@ public class SwerveModule {
 
         //CANabsoluteEncoder.configAbsoluteSensorRange(CANabsoluteEncoder.configGetAbsoluteSensorRange()); //Grabbing the configs from the pheonix tuner
         //CANabsoluteEncoder.getConfigurator();
-        
+      
         var CANcoderConfig = new CANcoderConfiguration();
         
         MagnetSensorConfigs magnetCfg = new MagnetSensorConfigs();
         magnetCfg.withAbsoluteSensorDiscontinuityPoint(0.5);
-        magnetCfg.withSensorDirection(SensorDirectionValue.Clockwise_Positive);
+        magnetCfg.withSensorDirection(SensorDirectionValue.CounterClockwise_Positive);
+       // magnetCfg.withMagnetOffset();
         
         CANcoderConfig.withMagnetSensor(magnetCfg);
-        /* User can change the configs if they want, or leave it empty for factory-default */
-        CANabsoluteEncoder.getConfigurator().apply(CANcoderConfig);
-
+        // /* User can change the configs if they want, or leave it empty for factory-default */
+        //CANabsoluteEncoder.getConfigurator().apply(CANcoderConfig);
     }
 
     public double getDrivePosition() 
