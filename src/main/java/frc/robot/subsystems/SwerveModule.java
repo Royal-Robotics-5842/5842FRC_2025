@@ -59,6 +59,7 @@ public class SwerveModule {
             //Converting the encoder values from "rotations" to meters
         driveConfig.encoder.positionConversionFactor(ModuleConstants.kDriveEncoderRot2Meter);
         driveConfig.encoder.velocityConversionFactor(ModuleConstants.kDriveEncoderRPM2MeterPerSec);
+        
         driveMotor.configure(driveConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         //Turn
         SparkMaxConfig turnConfig = new SparkMaxConfig();
@@ -117,20 +118,21 @@ public class SwerveModule {
     public SwerveModuleState getState() {
 
         //Gets the state of the module (Speed and Angle of the module) based off of the parameters below, FRC libraries do this for us
-        return new SwerveModuleState(getDriveVelocity(), new Rotation2d(getTurningPosition()*(Math.PI/180)));
+        return new SwerveModuleState(getDriveVelocity(), new Rotation2d(getTurningPosition()*(Math.PI/180)));   
     }
     
     public SwerveModulePosition getPosition() {
 
         //Gets the state of the module (Position (meters) and Angle of the module) based off of the parameters below, FRC libraries do this for us
-        return new SwerveModulePosition(getDrivePosition(), new Rotation2d(-getTurningPosition()*(Math.PI/180)));
+        return new SwerveModulePosition(getDrivePosition(), new Rotation2d(getTurningPosition()*(Math.PI/180)));
     }
 
     public void setDesiredState(SwerveModuleState state) 
     {
         //Setting where we want each module to be based off the parameter
-        state = SwerveModuleState.optimize(state, getState().angle);
-
+        //state = SwerveModuleState.optimize(state, getState().angle);
+        state.optimize(getState().angle);
+        
         if (Math.abs(state.speedMetersPerSecond) < 0.001) {
             stop();
             return;

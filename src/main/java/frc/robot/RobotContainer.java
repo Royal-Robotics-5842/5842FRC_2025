@@ -45,9 +45,9 @@ public class RobotContainer {
     
     swerveSubsystem.setDefaultCommand(new SwerveDriveJoystick(
       swerveSubsystem,
-      () -> -driverJoytick.getRawAxis(OIConstants.kDriverYAxis),
-      () -> -driverJoytick.getRawAxis(OIConstants.kDriverXAxis),
-      () ->  -driverJoytick.getRawAxis(OIConstants.kDriverRotAxis),
+      () -> -driverJoytick.getRawAxis(OIConstants.kDriverYAxis), // Forward/Back DO NOT TOUCH
+      () -> -driverJoytick.getRawAxis(OIConstants.kDriverXAxis), // Left/Right
+      () -> -driverJoytick.getRawAxis(OIConstants.kDriverRotAxis),
       () -> !m_driverController.y().getAsBoolean()));
      
       SmartDashboard.putBoolean("Field Centric", !m_driverController.y().getAsBoolean());
@@ -74,7 +74,7 @@ public class RobotContainer {
    */
   private void configureBindings() {
     m_driverController.a().onTrue(zeroHeading); 
-    m_driverController.x().onTrue(setToX.withTimeout(1));
+    m_driverController.x().onTrue(setToX);
     m_driverController.b().onTrue((new SetToAngle(swerveSubsystem, 0)).withTimeout(0.5));
   }
     

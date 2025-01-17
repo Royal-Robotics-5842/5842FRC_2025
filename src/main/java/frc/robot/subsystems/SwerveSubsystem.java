@@ -82,7 +82,7 @@ public class SwerveSubsystem extends SubsystemBase {
   
   public double getHeading() 
   {
-    return Math.IEEEremainder(gyro.getAngle(), 360); //Get the position the swerve is facing
+    return Math.IEEEremainder(-gyro.getAngle(), 360); //Get the position the swerve is facing
   }
     
   public Rotation2d getRotation2d()

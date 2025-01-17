@@ -26,6 +26,8 @@ public class SetToX extends Command {
     swerve.frontRight.setToAngle(45);
     swerve.backLeft.setToAngle(45);
     swerve.backRight.setToAngle(45);
+
+    System.out.println(swerve.getHeading());
   }
 
   // Called once the command ends or is interrupted.

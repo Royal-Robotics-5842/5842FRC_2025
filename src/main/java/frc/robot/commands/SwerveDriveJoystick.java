@@ -51,7 +51,7 @@ public class SwerveDriveJoystick extends Command {
   {
     // 1. Get real-time joystick inputs
     double xSpeed = xSpdFunction.get();
-    double ySpeed = -ySpdFunction.get();
+    double ySpeed = ySpdFunction.get();
     double turningSpeed = turningSpdFunction.get();
 
     xSpeed = Math.abs(xSpeed) > OIConstants.kDeadband ? xSpeed : 0.0;
@@ -80,7 +80,7 @@ public class SwerveDriveJoystick extends Command {
     //System.out.println("FL Drive Encoder: " + swerveSubsystem.frontLeft.getDrivePosition());
     //System.out.println("FR Drive Encoder: " + swerveSubsystem.frontRight.getDrivePosition());
     //System.out.println("BL Drive Encoder: " + swerveSubsystem.backLeft.getDrivePosition());
-    //System.out.println("BR Drive Encoder: " + swerveSubsystem.backRight.getDrivePosition());
+    System.out.println("BR Drive Encoder: " + swerveSubsystem.backRight.getDrivePosition());
   }
   
   // Called once the command ends or is interrupted.
