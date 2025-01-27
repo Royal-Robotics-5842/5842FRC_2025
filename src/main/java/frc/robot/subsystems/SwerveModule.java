@@ -66,7 +66,7 @@ public class SwerveModule {
         turnConfig.inverted(turningMotorReversed); 
         turnConfig.idleMode(IdleMode.kCoast);
         turnConfig.smartCurrentLimit(40);
-        turningMotor.configure(driveConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        turningMotor.configure(turnConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
 //-----------------------------------------------------------------------
         //Setting the variable to a value given from the drive motor encoder (Allowing us to know where we are on the field)
@@ -78,7 +78,7 @@ public class SwerveModule {
 
         //CANabsoluteEncoder.configAbsoluteSensorRange(CANabsoluteEncoder.configGetAbsoluteSensorRange()); //Grabbing the configs from the pheonix tuner
         //CANabsoluteEncoder.getConfigurator();
-      
+     /* 
         var CANcoderConfig = new CANcoderConfiguration();
         
         MagnetSensorConfigs magnetCfg = new MagnetSensorConfigs();
