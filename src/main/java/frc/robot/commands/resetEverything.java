@@ -3,12 +3,13 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.commands;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.SwerveSubsystem;
 
-public class StopSwerveModule extends Command {
+public class resetEverything extends Command {
   private final SwerveSubsystem swerve;
-  public StopSwerveModule(SwerveSubsystem swerve) {
+  public resetEverything(SwerveSubsystem swerve) {
     this.swerve = swerve;
     addRequirements(swerve);
   
@@ -16,31 +17,38 @@ public class StopSwerveModule extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() 
+  {
+    System.out.println("resetEverything START");
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute(){
-    swerve.stopModules();
+    swerve.zeroHeading();
+
+    swerve.frontLeft.setToAngle(0);
+    swerve.frontRight.setToAngle(0);
+    swerve.backLeft.setToAngle(0);
+    swerve.backRight.setToAngle(0);
+
+    swerve.frontLeft.setDrivePosition(0);
+    swerve.frontRight.setDrivePosition(0);
+    swerve.backLeft.setDrivePosition(0);
+    swerve.backRight.setDrivePosition(0);
+
+    swerve.resetOdemetry(new Pose2d(0, 0, swerve.gyro.getRotation2d()));
   }
   
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    System.out.println("resetEverything ENDED");
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (swerve.frontLeft.getDriveVelocity() == 0 &&
-        swerve.frontRight.getDriveVelocity() == 0 &&
-        swerve.backLeft.getDriveVelocity() == 0 &&
-        swerve.backRight.getDriveVelocity() == 0)
-    {
-      System.out.print("SwerveModule Speed Is Now 0!");
-      return true;
-    }
-
     return false;
   }
 }
