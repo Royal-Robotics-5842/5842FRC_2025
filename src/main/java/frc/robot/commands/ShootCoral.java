@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.CoralShooter;
 
@@ -12,6 +13,7 @@ public class ShootCoral extends Command {
   /** Creates a new ShootCoral. */
   public CoralShooter coral;
   public double speed;
+  public double startTime;
   public ShootCoral(CoralShooter coral, double speed) {
     this.coral = coral;
     this.speed = speed;
@@ -21,7 +23,10 @@ public class ShootCoral extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() 
+  {
+    startTime = coral.coralTimer.getFPGATimestamp();
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -42,11 +47,11 @@ public class ShootCoral extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    /*(coral.leftMotor.getOutputCurrent() >= 30)
+    if (coral.coralTimer.getFPGATimestamp() - startTime >= 0.5 && (coral.leftMotor.getOutputCurrent() >=20))
     {
       return true;
     }
-      */
+    
     return false;
   }
 }
