@@ -17,9 +17,12 @@ import frc.robot.subsystems.SwerveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -61,8 +64,9 @@ public class RobotContainer {
     SmartDashboard.putNumber("Turn FL", swerveSubsystem.frontLeft.getTurningPosition());
     SmartDashboard.putNumber("Turn BR", swerveSubsystem.backRight.getTurningPosition());
     SmartDashboard.putNumber("Turn FR", swerveSubsystem.frontRight.getDrivePosition());
-    
-    
+  
+    //Register auto commands
+    NamedCommands.registerCommand("Coral Outtake", new ShootCoral(coral, 0.10));
   }
 
   
@@ -106,7 +110,7 @@ public class RobotContainer {
    */
   
   public Command getAutonomousCommand() {
-    return Autos.exampleAuto();
+    return new PathPlannerAuto("Jonah Test Auto");
   }
 }
 
