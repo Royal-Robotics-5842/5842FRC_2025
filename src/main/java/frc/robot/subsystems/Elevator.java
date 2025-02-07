@@ -72,6 +72,7 @@ public class Elevator extends SubsystemBase {
     // This method will be called once per scheduler run
     SmartDashboard.putBoolean("EleLimit",eleLimitSwitch.get());
     SmartDashboard.putNumber("ElevatorRightEncoder", leftMotor.getEncoder().getPosition());
+    SmartDashboard.putNumber("elevator Power", leftMotor.getAppliedOutput());
 
   }
 }

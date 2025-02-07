@@ -42,6 +42,11 @@ public class ShootCoral extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    /*(coral.leftMotor.getOutputCurrent() >= 30)
+    {
+      return true;
+    }
+      */
     return false;
   }
 }
