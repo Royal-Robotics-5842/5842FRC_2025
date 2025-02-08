@@ -47,6 +47,10 @@ public class moveElevator extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    if((elevator.getLimit() == false) )//&& (elevator.    () > 0.0001))
+    {
+      return true;
+    }
     return false;
   }
 }
