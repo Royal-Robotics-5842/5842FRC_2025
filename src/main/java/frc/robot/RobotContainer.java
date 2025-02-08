@@ -5,14 +5,13 @@
 package frc.robot;
 
 import frc.robot.Constants.OIConstants;
-import frc.robot.commands.Autos;
+import frc.robot.commands.RunElevator;
+import frc.robot.commands.RunElevatorPID;
 import frc.robot.commands.ShootCoral;
 import frc.robot.commands.SwerveDriveJoystick;
-import frc.robot.commands.elevPID;
-import frc.robot.commands.moveElevator;
 import frc.robot.commands.resetEverything;
 import frc.robot.subsystems.CoralShooter;
-import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.ElevatorSystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -33,7 +32,7 @@ public class RobotContainer {
 
   // The robot's subsystems are defined here...
   private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
-  private final Elevator elevator = new Elevator();
+  private final ElevatorSystem elevator = new ElevatorSystem();
   private final CoralShooter coral = new CoralShooter();
 
 
@@ -81,16 +80,15 @@ public class RobotContainer {
    */
   private void configureBindings() {
     m_driverController.rightTrigger().onTrue((new resetEverything(swerveSubsystem,elevator)).withTimeout(0.5));
-    m_driverController.a().toggleOnTrue(new moveElevator(elevator, 0.75));
-    m_driverController.y().toggleOnTrue(new moveElevator(elevator, 0.05));
-    m_driverController.x().toggleOnTrue(new moveElevator(elevator, -0.75));
-    m_driverController.b().toggleOnTrue(new moveElevator(elevator, 0));
+    m_driverController.a().toggleOnTrue(new RunElevator(elevator, 0.75));
+    m_driverController.y().toggleOnTrue(new RunElevator(elevator, 0.05));
+    m_driverController.x().toggleOnTrue(new RunElevator(elevator, -0.75));
+    m_driverController.b().toggleOnTrue(new RunElevator(elevator, 0));
 
-    m_driverController.povUp().toggleOnTrue(new elevPID(elevator, 183));
-    m_driverController.povLeft().toggleOnTrue(new elevPID(elevator, 103));
-    m_driverController.povRight().toggleOnTrue(new elevPID(elevator, 47));
-    m_driverController.povDown().toggleOnTrue(new elevPID(elevator, 3));
-    
+    m_driverController.povUp().toggleOnTrue(new RunElevatorPID(elevator, 183));
+    m_driverController.povLeft().toggleOnTrue(new RunElevatorPID(elevator, 103));
+    m_driverController.povRight().toggleOnTrue(new RunElevatorPID(elevator, 47));
+    m_driverController.povDown().toggleOnTrue(new RunElevatorPID(elevator, 3));
 
     m_driverController.leftBumper().toggleOnTrue(new ShootCoral(coral, 0.1));
   }

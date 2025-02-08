@@ -5,13 +5,13 @@
 package frc.robot.commands;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.ElevatorSystem;
 import frc.robot.subsystems.SwerveSubsystem;
 
 public class resetEverything extends Command {
   private final SwerveSubsystem swerve;
-  private final Elevator elevator;
-  public resetEverything(SwerveSubsystem swerve, Elevator elevator) {
+  private final ElevatorSystem elevator;
+  public resetEverything(SwerveSubsystem swerve, ElevatorSystem elevator) {
     this.swerve = swerve;
     this.elevator = elevator;
     addRequirements(swerve, elevator);
@@ -35,7 +35,7 @@ public class resetEverything extends Command {
     swerve.backLeft.setToAngle(0);
     swerve.backRight.setToAngle(0);
 
-    elevator.leftMotor.getEncoder().setPosition(0);
+    elevator.elevatorLeft.getEncoder().setPosition(0);
 /*
     swerve.frontLeft.setDrivePosition(0);
     swerve.frontRight.setDrivePosition(0);
