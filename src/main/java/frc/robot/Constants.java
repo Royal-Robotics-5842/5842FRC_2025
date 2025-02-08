@@ -90,7 +90,7 @@ public final class Constants {
     public static final double kPYController = .5;
     
     public static final double kPXController = 1.8; //Value is arbitrary
-    public static final double kPThetaController = 2.9; //Value is arbitrary;
+    public static final double kPThetaController = 2.5; //Value is arbitrary;
 
     public static final TrapezoidProfile.Constraints kThetaControllerConstraints = //
             new TrapezoidProfile.Constraints(

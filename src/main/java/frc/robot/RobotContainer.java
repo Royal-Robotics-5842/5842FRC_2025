@@ -92,7 +92,7 @@ public class RobotContainer {
     m_driverController.povDown().toggleOnTrue(new elevPID(elevator, 3));
     
 
-    m_driverController.leftBumper().toggleOnTrue(new ShootCoral(coral, 0.10));
+    m_driverController.leftBumper().toggleOnTrue(new ShootCoral(coral, 0.1));
   }
     
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
