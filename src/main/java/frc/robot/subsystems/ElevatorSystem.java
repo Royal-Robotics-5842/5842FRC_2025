@@ -25,7 +25,7 @@ public class ElevatorSystem extends SubsystemBase {
             SparkMaxConfig leftConfig = new SparkMaxConfig();
             leftConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder);
             leftConfig.closedLoop
-            .p(0.05)
+            .p(0.06)
             .i(0)
             .d(0)
             .outputRange(-1, 1);

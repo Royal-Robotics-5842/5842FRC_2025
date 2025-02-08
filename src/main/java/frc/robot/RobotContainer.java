@@ -66,6 +66,10 @@ public class RobotContainer {
   
     //Register auto commands
     NamedCommands.registerCommand("Coral Outtake", new ShootCoral(coral, 0.10));
+    NamedCommands.registerCommand("L4 Elevator", new RunElevatorPID(elevator, 183));
+    NamedCommands.registerCommand("L3 Elevator", new RunElevatorPID(elevator, 103));
+    NamedCommands.registerCommand("L2 Elevator", new RunElevatorPID(elevator, 47));
+    NamedCommands.registerCommand("L1/Bottom Elevator", new RunElevatorPID(elevator, 3));
   }
 
   
@@ -108,7 +112,7 @@ public class RobotContainer {
    */
   
   public Command getAutonomousCommand() {
-    return new PathPlannerAuto("Jonah Test Auto");
+    return new PathPlannerAuto("Elevator Auto");
   }
 }
 

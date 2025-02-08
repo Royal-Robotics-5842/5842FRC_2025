@@ -21,8 +21,14 @@ public class RunElevatorPID extends Command {
     }
   
     @Override
-    public void end(boolean interrupted) 
-    {
-        //elevatorSystem.run(0);
+    public void end(boolean interrupted) {}
+
+    @Override
+    public boolean isFinished() {
+        double diff = (setpoint - elevatorSystem.elevatorLeft.getEncoder().getPosition());
+        if(diff < 0.8) {
+            return true;
+        }
+      return false;
     }
 }
