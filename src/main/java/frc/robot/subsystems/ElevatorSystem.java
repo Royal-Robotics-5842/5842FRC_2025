@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -22,6 +23,13 @@ public class ElevatorSystem extends SubsystemBase {
 
     public ElevatorSystem() {
             SparkMaxConfig leftConfig = new SparkMaxConfig();
+            leftConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder);
+            leftConfig.closedLoop
+            .p(0.05)
+            .i(0)
+            .d(0)
+            .outputRange(-1, 1);
+            
             leftConfig
                 .inverted(false)
                 .idleMode(IdleMode.kBrake);
@@ -36,12 +44,6 @@ public class ElevatorSystem extends SubsystemBase {
         elevatorRight.configure(rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         
         elevatorPid = elevatorLeft.getClosedLoopController();
-
-        leftConfig.closedLoop
-            .p(0.05)
-            .i(0)
-            .d(0)
-            .outputRange(-1, 1);
     }
 
     public void run(double speed) {
