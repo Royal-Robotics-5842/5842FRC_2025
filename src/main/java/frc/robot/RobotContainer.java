@@ -6,7 +6,6 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-<<<<<<< HEAD
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -21,34 +20,6 @@ import frc.robot.commands.resetEverything;
 import frc.robot.subsystems.CoralShooter;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.SwerveSubsystem;
-=======
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Constants.OIConstants;
-import frc.robot.commands.Autos;
-import frc.robot.commands.ShootCoral;
-import frc.robot.commands.SwerveDriveJoystick;
-import frc.robot.commands.SwerveDriveJoystickLimeLight;
-import frc.robot.commands.elevPID;
-import frc.robot.commands.moveElevator;
-import frc.robot.commands.resetEverything;
-import frc.robot.subsystems.CoralShooter;
-import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.SwerveSubsystem;
-<<<<<<< HEAD
-=======
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
-
-import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.commands.PathPlannerAuto;
-
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
->>>>>>> b1ec55dfe6960c20357ccbc0d076a323fad86dc6
->>>>>>> 0aa36058f835c16966a92633cc287204a9d68df8
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -60,15 +31,7 @@ public class RobotContainer {
 
   // The robot's subsystems are defined here...
   private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
-<<<<<<< HEAD
   private final Elevator elevator = new Elevator();
-=======
-<<<<<<< HEAD
-  private final Elevator elevator = new Elevator();
-=======
-  private final ElevatorSystem elevator = new ElevatorSystem();
->>>>>>> b1ec55dfe6960c20357ccbc0d076a323fad86dc6
->>>>>>> 0aa36058f835c16966a92633cc287204a9d68df8
   private final CoralShooter coral = new CoralShooter();
 
 
@@ -94,25 +57,7 @@ public class RobotContainer {
       SmartDashboard.putNumber("Robot Pitch", swerveSubsystem.gyro.getPitch());
 
     configureBindings();
-<<<<<<< HEAD
     
-=======
-    
-<<<<<<< HEAD
-=======
-    SmartDashboard.putNumber("Turn BL", swerveSubsystem.backLeft.getTurningPosition());
-    SmartDashboard.putNumber("Turn FL", swerveSubsystem.frontLeft.getTurningPosition());
-    SmartDashboard.putNumber("Turn BR", swerveSubsystem.backRight.getTurningPosition());
-    SmartDashboard.putNumber("Turn FR", swerveSubsystem.frontRight.getDrivePosition());
-  
-    //Register auto commands
-    NamedCommands.registerCommand("Coral Outtake", new ShootCoral(coral, 0.10));
-    NamedCommands.registerCommand("L4 Elevator", new RunElevatorPID(elevator, 183));
-    NamedCommands.registerCommand("L3 Elevator", new RunElevatorPID(elevator, 103));
-    NamedCommands.registerCommand("L2 Elevator", new RunElevatorPID(elevator, 47));
-    NamedCommands.registerCommand("L1/Bottom Elevator", new RunElevatorPID(elevator, 3));
->>>>>>> b1ec55dfe6960c20357ccbc0d076a323fad86dc6
->>>>>>> 0aa36058f835c16966a92633cc287204a9d68df8
     
     
   }
@@ -140,28 +85,13 @@ public class RobotContainer {
     m_driverController.x().toggleOnTrue(new moveElevator(elevator, -0.75));
     m_driverController.b().toggleOnTrue(new moveElevator(elevator, 0));
 
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
-
->>>>>>> b1ec55dfe6960c20357ccbc0d076a323fad86dc6
->>>>>>> 0aa36058f835c16966a92633cc287204a9d68df8
     m_driverController.povUp().toggleOnTrue(new elevPID(elevator, 178));
     m_driverController.povLeft().toggleOnTrue(new elevPID(elevator, 103));
     m_driverController.povRight().toggleOnTrue(new elevPID(elevator, 47));
     m_driverController.povDown().toggleOnTrue(new elevPID(elevator, 1));
     
 
-<<<<<<< HEAD
     m_driverController.leftBumper().toggleOnTrue(new ShootCoral(coral, 0.10));
-=======
-<<<<<<< HEAD
-    m_driverController.leftBumper().toggleOnTrue(new ShootCoral(coral, 0.10));
-=======
-    m_driverController.leftBumper().toggleOnTrue(new ShootCoral(coral, 0.1));
->>>>>>> b1ec55dfe6960c20357ccbc0d076a323fad86dc6
->>>>>>> 0aa36058f835c16966a92633cc287204a9d68df8
   }
     
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
@@ -182,4 +112,3 @@ public class RobotContainer {
     return Autos.exampleAuto();
   }
 }
-

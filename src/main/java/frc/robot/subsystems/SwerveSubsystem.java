@@ -12,14 +12,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.SPI;
->>>>>>> b1ec55dfe6960c20357ccbc0d076a323fad86dc6
->>>>>>> 0aa36058f835c16966a92633cc287204a9d68df8
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -83,14 +75,6 @@ public class SwerveSubsystem extends SubsystemBase {
   
 
 
-    NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight-lite");
-    NetworkTableEntry tx = table.getEntry("tx");
-    NetworkTableEntry ty = table.getEntry("ty");
-    NetworkTableEntry ta = table.getEntry("ta");
-
-  
-
-
     public SwerveSubsystem() {   
       new Thread(() -> {
         try {
@@ -99,46 +83,6 @@ public class SwerveSubsystem extends SubsystemBase {
         } catch (Exception e) {
         }
     }).start();
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
-
-    try{
-      config = RobotConfig.fromGUISettings();
-    } catch (Exception e) {
-      // Handle exception as needed
-      e.printStackTrace();
-    }
-
-    //Register swerve auto
-    AutoBuilder.configure(
-      this::getPose,
-      this::resetOdometry,
-      this::getRobotRelativeSpeeds,   
-      (speeds, feedforwards) -> driveRobotRelative(speeds),
-      new PPHolonomicDriveController(
-        new PIDConstants(Constants.AutoConstants.kPXController, 0.0, 0.0),
-        new PIDConstants(Constants.AutoConstants.kPThetaController, 0.0, 0.0)
-      ), 
-      config,
-      () -> {
-        // Boolean supplier that controls when the path will be mirrored for the red alliance
-        // This will flip the path being followed to the red side of the field.
-        // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-
-        var alliance = DriverStation.getAlliance();
-        if (alliance.isPresent()) {
-          return alliance.get() == DriverStation.Alliance.Red;
-        }
-        return false;
-        }, this
-      
-    );
-
-    
->>>>>>> b1ec55dfe6960c20357ccbc0d076a323fad86dc6
->>>>>>> 0aa36058f835c16966a92633cc287204a9d68df8
 }
 
 
@@ -253,4 +197,3 @@ public class SwerveSubsystem extends SubsystemBase {
   }
 
 }
-
