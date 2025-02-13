@@ -42,8 +42,6 @@ public class SwerveModule {
 
         CANabsoluteEncoder = new CANcoder(encoderId); //Giving the AbsoluteEncoder a CANid
 
-        resetEncoders(); //Reseting the position
-
         //Giving the motor a CANid and making it a brushless motor
         driveMotor = new SparkMax(driveMotorId, MotorType.kBrushless);
         turningMotor = new SparkMax(turningMotorID, MotorType.kBrushless);
@@ -72,7 +70,7 @@ public class SwerveModule {
         //Setting the variable to a value given from the drive motor encoder (Allowing us to know where we are on the field)
         //driveEncoder = driveMotor.getAlternateEncoder(); //   .getAlternateEncoder();
         
-        turningPidController = new PIDController(0.007, 0,0); //Creating PID controller for turning
+        turningPidController = new PIDController(0.008, 0,0); //Creating PID controller for turning
 
         turningPidController.enableContinuousInput(-180, 180); //Making sure that only values from 0-180 are allowed
 
@@ -111,7 +109,7 @@ public class SwerveModule {
 
     public void resetEncoders() {
 
-        //driveMotor.getEncoder().setPosition(0);   //setPosition(0);
+        driveMotor.getEncoder().setPosition(0);   //setPosition(0);
         CANabsoluteEncoder.setPosition(0);
     }
 

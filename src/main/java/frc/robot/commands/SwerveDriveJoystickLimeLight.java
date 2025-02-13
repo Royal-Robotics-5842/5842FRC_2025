@@ -15,26 +15,23 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.SwerveSubsystem;
 
-public class SwerveDriveJoystick extends Command {
+public class SwerveDriveJoystickLimeLight extends Command {
   
   private final SwerveSubsystem swerveSubsystem;
-  private final Supplier<Double> xSpdFunction, ySpdFunction, turningSpdFunction;
+  private final Supplier<Double> xSpdFunction, ySpdFunction;
   private final Supplier<Boolean> fieldOrientedFunction;
 
-  private final SlewRateLimiter xLimiter, yLimiter, turningLimiter;
+  private final SlewRateLimiter xLimiter, yLimiter;
 
-  public SwerveDriveJoystick(SwerveSubsystem swerveSubsystem, Supplier<Double> xSpdFunction, Supplier<Double> ySpdFunction, Supplier<Double> turningSpdFunction, 
-                            Supplier<Boolean> fieldOrientedFunction) { 
+  public SwerveDriveJoystickLimeLight(SwerveSubsystem swerveSubsystem, Supplier<Double> xSpdFunction, Supplier<Double> ySpdFunction, Supplier<Boolean> fieldOrientedFunction) { 
               this.swerveSubsystem = swerveSubsystem;
               this.xSpdFunction = xSpdFunction;
               this.ySpdFunction = ySpdFunction;
-              this.turningSpdFunction = turningSpdFunction;
               this.fieldOrientedFunction = fieldOrientedFunction;
 
               this.xLimiter = new SlewRateLimiter(DriveConstants.kTeleDriveMaxAccelerationUnitsPerSecond);
               this.yLimiter = new SlewRateLimiter(DriveConstants.kTeleDriveMaxAccelerationUnitsPerSecond);
-              this.turningLimiter = new SlewRateLimiter(DriveConstants.kTeleDriveMaxAngularAccelerationUnitsPerSecond);
-
+             
     // Use addRequirements() here to declare subsystem dependencies.
 
     addRequirements(swerveSubsystem);
@@ -52,24 +49,20 @@ public class SwerveDriveJoystick extends Command {
     // 1. Get real-time joystick inputs
     double xSpeed = xSpdFunction.get();
     double ySpeed = ySpdFunction.get();
-    double turningSpeed = turningSpdFunction.get();
 
     xSpeed = Math.abs(xSpeed) > OIConstants.kDeadband ? xSpeed : 0.0;
     ySpeed = Math.abs(ySpeed) > OIConstants.kDeadband ? ySpeed : 0.0;
-    turningSpeed = Math.abs(turningSpeed) > OIConstants.kDeadband ? turningSpeed : 0.0;
     
     xSpeed = xLimiter.calculate(xSpeed) * DriveConstants.kTeleDriveMaxSpeedMetersPerSecond;
     ySpeed = yLimiter.calculate(ySpeed) * DriveConstants.kTeleDriveMaxSpeedMetersPerSecond;
-    turningSpeed = turningLimiter.calculate(turningSpeed)
-            * DriveConstants.kTeleDriveMaxAngularSpeedRadiansPerSecond;
 
     ChassisSpeeds chassisSpeeds;
         if (fieldOrientedFunction.get())
             chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-                    xSpeed, ySpeed, turningSpeed, swerveSubsystem.getRotation2d());
+                    swerveSubsystem.limelight_range_proportional(), ySpeed, swerveSubsystem.limelight_aim_proportional(), swerveSubsystem.getRotation2d());
          else {
             // Relative to robot
-            chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, turningSpeed);
+            chassisSpeeds = new ChassisSpeeds(swerveSubsystem.limelight_range_proportional(), ySpeed, swerveSubsystem.limelight_aim_proportional());
         }
         
     SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
@@ -82,13 +75,12 @@ public class SwerveDriveJoystick extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    //swerveSubsystem.stopModules();
+    System.out.println("ENDED MOTHERFUCKER");
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return Math.abs(RobotContainer.driverJoytick.getRawAxis(OIConstants.kDriverYAxis)) <= 0.1 && 
-           Math.abs(RobotContainer.driverJoytick.getRawAxis(OIConstants.kDriverXAxis)) <= 0.1;
+    return false;
   }
 }
