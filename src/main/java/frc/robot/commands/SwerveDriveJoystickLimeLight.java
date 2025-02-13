@@ -59,10 +59,10 @@ public class SwerveDriveJoystickLimeLight extends Command {
     ChassisSpeeds chassisSpeeds;
         if (fieldOrientedFunction.get())
             chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-                    swerveSubsystem.limelight_range_proportional(), ySpeed, swerveSubsystem.limelight_aim_proportional(), swerveSubsystem.getRotation2d());
+                    xSpeed, ySpeed, swerveSubsystem.limelight_aim_proportional(), swerveSubsystem.getRotation2d());
          else {
             // Relative to robot
-            chassisSpeeds = new ChassisSpeeds(swerveSubsystem.limelight_range_proportional(), ySpeed, swerveSubsystem.limelight_aim_proportional());
+            chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, swerveSubsystem.limelight_aim_proportional());
         }
         
     SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
