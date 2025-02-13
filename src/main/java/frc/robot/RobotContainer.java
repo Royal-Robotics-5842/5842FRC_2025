@@ -4,11 +4,19 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.RunElevator;
 import frc.robot.commands.RunElevatorPID;
 import frc.robot.commands.ShootCoral;
 import frc.robot.commands.SwerveDriveJoystick;
+import frc.robot.commands.SwerveDriveJoystickLimeLight;
+import frc.robot.commands.elevPID;
+import frc.robot.commands.moveElevator;
 import frc.robot.commands.resetEverything;
 import frc.robot.subsystems.CoralShooter;
 import frc.robot.subsystems.ElevatorSystem;
@@ -22,6 +30,7 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -46,14 +55,14 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    
+   
     swerveSubsystem.setDefaultCommand(new SwerveDriveJoystick(
       swerveSubsystem,
       () -> -driverJoytick.getRawAxis(OIConstants.kDriverYAxis), // Forward/Back DO NOT TOUCH
       () -> -driverJoytick.getRawAxis(OIConstants.kDriverXAxis), // Left/Right
       () -> -driverJoytick.getRawAxis(OIConstants.kDriverRotAxis),
       () -> !m_driverController.y().getAsBoolean()));
-     
+    
       SmartDashboard.putBoolean("Field Centric", !m_driverController.y().getAsBoolean());
       SmartDashboard.putNumber("Robot Pitch", swerveSubsystem.gyro.getPitch());
 
@@ -70,6 +79,8 @@ public class RobotContainer {
     NamedCommands.registerCommand("L3 Elevator", new RunElevatorPID(elevator, 103));
     NamedCommands.registerCommand("L2 Elevator", new RunElevatorPID(elevator, 47));
     NamedCommands.registerCommand("L1/Bottom Elevator", new RunElevatorPID(elevator, 3));
+    
+    
   }
 
   
@@ -84,11 +95,26 @@ public class RobotContainer {
    */
   private void configureBindings() {
     m_driverController.rightTrigger().onTrue((new resetEverything(swerveSubsystem,elevator)).withTimeout(0.5));
+    
+    m_driverController.a().whileTrue(new SwerveDriveJoystickLimeLight(
+      swerveSubsystem,
+      () -> -driverJoytick.getRawAxis(OIConstants.kDriverYAxis), // Forward/Back DO NOT TOUCH
+      () -> -driverJoytick.getRawAxis(OIConstants.kDriverXAxis), // Left/Right
+      () -> !m_driverController.y().getAsBoolean()));
+
+    m_driverController.y().toggleOnTrue(new moveElevator(elevator, 0.05));
+    m_driverController.x().toggleOnTrue(new moveElevator(elevator, -0.75));
+    m_driverController.b().toggleOnTrue(new moveElevator(elevator, 0));
     m_driverController.a().toggleOnTrue(new RunElevator(elevator, 0.75));
     m_driverController.y().toggleOnTrue(new RunElevator(elevator, 0.05));
     m_driverController.x().toggleOnTrue(new RunElevator(elevator, -0.75));
     m_driverController.b().toggleOnTrue(new RunElevator(elevator, 0));
 
+    m_driverController.povUp().toggleOnTrue(new elevPID(elevator, 178));
+    m_driverController.povLeft().toggleOnTrue(new elevPID(elevator, 103));
+    m_driverController.povRight().toggleOnTrue(new elevPID(elevator, 47));
+    m_driverController.povDown().toggleOnTrue(new elevPID(elevator, 1));
+    
     m_driverController.povUp().toggleOnTrue(new RunElevatorPID(elevator, 183));
     m_driverController.povLeft().toggleOnTrue(new RunElevatorPID(elevator, 103));
     m_driverController.povRight().toggleOnTrue(new RunElevatorPID(elevator, 47));

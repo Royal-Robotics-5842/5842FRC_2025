@@ -35,7 +35,7 @@ public class resetEverything extends Command {
     swerve.backLeft.setToAngle(0);
     swerve.backRight.setToAngle(0);
 
-    elevator.elevatorLeft.getEncoder().setPosition(0);
+    //elevator.leftMotor.getEncoder().setPosition(0);
 /*
     swerve.frontLeft.setDrivePosition(0);
     swerve.frontRight.setDrivePosition(0);
