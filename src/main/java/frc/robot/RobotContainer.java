@@ -105,20 +105,13 @@ public class RobotContainer {
     m_driverController.y().toggleOnTrue(new moveElevator(elevator, 0.05));
     m_driverController.x().toggleOnTrue(new moveElevator(elevator, -0.75));
     m_driverController.b().toggleOnTrue(new moveElevator(elevator, 0));
-    m_driverController.a().toggleOnTrue(new RunElevator(elevator, 0.75));
-    m_driverController.y().toggleOnTrue(new RunElevator(elevator, 0.05));
-    m_driverController.x().toggleOnTrue(new RunElevator(elevator, -0.75));
-    m_driverController.b().toggleOnTrue(new RunElevator(elevator, 0));
+
 
     m_driverController.povUp().toggleOnTrue(new elevPID(elevator, 178));
     m_driverController.povLeft().toggleOnTrue(new elevPID(elevator, 103));
     m_driverController.povRight().toggleOnTrue(new elevPID(elevator, 47));
     m_driverController.povDown().toggleOnTrue(new elevPID(elevator, 1));
     
-    m_driverController.povUp().toggleOnTrue(new RunElevatorPID(elevator, 183));
-    m_driverController.povLeft().toggleOnTrue(new RunElevatorPID(elevator, 103));
-    m_driverController.povRight().toggleOnTrue(new RunElevatorPID(elevator, 47));
-    m_driverController.povDown().toggleOnTrue(new RunElevatorPID(elevator, 3));
 
     m_driverController.leftBumper().toggleOnTrue(new ShootCoral(coral, 0.1));
   }
