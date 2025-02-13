@@ -5,13 +5,13 @@
 package frc.robot.commands;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.ElevatorSystem;
+import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.SwerveSubsystem;
 
 public class resetEverything extends Command {
   private final SwerveSubsystem swerve;
-  private final ElevatorSystem elevator;
-  public resetEverything(SwerveSubsystem swerve, ElevatorSystem elevator) {
+  private final Elevator elevator;
+  public resetEverything(SwerveSubsystem swerve, Elevator elevator) {
     this.swerve = swerve;
     this.elevator = elevator;
     addRequirements(swerve, elevator);
