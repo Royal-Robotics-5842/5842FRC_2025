@@ -17,8 +17,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class CoralShooter extends SubsystemBase {
   /** Creates a new CoralShooter. */
-  public SparkMax rightMotor = new SparkMax(2, MotorType.kBrushless);
-  public SparkMax leftMotor = new SparkMax(3, MotorType.kBrushless);
+  public SparkMax rightMotor = new SparkMax(42, MotorType.kBrushless);
+  public SparkMax leftMotor = new SparkMax(43, MotorType.kBrushless);
   public Timer coralTimer = new Timer();
 
 

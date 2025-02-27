@@ -4,19 +4,28 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.path.PathPlannerPath;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OIConstants;
-import frc.robot.commands.Autos;
+import frc.robot.commands.ShootAlgae;
 import frc.robot.commands.ShootCoral;
 import frc.robot.commands.SwerveDriveJoystick;
-import frc.robot.commands.SwerveDriveJoystickLimeLight;
 import frc.robot.commands.elevPID;
+import frc.robot.commands.moveArm;
 import frc.robot.commands.moveElevator;
+import frc.robot.commands.onTheFlyPathPlanner;
 import frc.robot.commands.resetEverything;
+import frc.robot.subsystems.AlgaeShootSubsystem;
+import frc.robot.subsystems.ArmMoveSubsystem;
 import frc.robot.subsystems.CoralShooter;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.SwerveSubsystem;
@@ -33,6 +42,8 @@ public class RobotContainer {
   private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
   private final Elevator elevator = new Elevator();
   private final CoralShooter coral = new CoralShooter();
+  private final ArmMoveSubsystem arm = new ArmMoveSubsystem();
+  private final AlgaeShootSubsystem algae = new AlgaeShootSubsystem();
 
 
   //THe robot's commands are defined here...
@@ -42,6 +53,10 @@ public class RobotContainer {
   public final static CommandXboxController m_driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
   public final static double lefTrigger = m_driverController.getLeftTriggerAxis();
   public final static double rightTrigger = m_driverController.getRightTriggerAxis();
+
+  public final static CommandXboxController operatorController = new CommandXboxController(OIConstants.kOperatorControllerPort);
+  public final static double o_lefTrigger = operatorController.getLeftTriggerAxis();
+  public final static double o_rightTrigger = operatorController.getRightTriggerAxis();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -73,25 +88,46 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    m_driverController.rightTrigger().onTrue((new resetEverything(swerveSubsystem,elevator)).withTimeout(0.5));
-    
+/*
     m_driverController.a().whileTrue(new SwerveDriveJoystickLimeLight(
       swerveSubsystem,
+
       () -> -driverJoytick.getRawAxis(OIConstants.kDriverYAxis), // Forward/Back DO NOT TOUCH
       () -> -driverJoytick.getRawAxis(OIConstants.kDriverXAxis), // Left/Right
       () -> !m_driverController.y().getAsBoolean()));
-
+*/
     m_driverController.y().toggleOnTrue(new moveElevator(elevator, 0.05));
     m_driverController.x().toggleOnTrue(new moveElevator(elevator, -0.75));
-    m_driverController.b().toggleOnTrue(new moveElevator(elevator, 0));
+    m_driverController.b().toggleOnTrue(new moveElevator(elevator, 0.25));
 
-    m_driverController.povUp().toggleOnTrue(new elevPID(elevator, 178));
-    m_driverController.povLeft().toggleOnTrue(new elevPID(elevator, 103));
-    m_driverController.povRight().toggleOnTrue(new elevPID(elevator, 47));
+    m_driverController.povUp().toggleOnTrue(new elevPID(elevator, 175));
+    m_driverController.povLeft().toggleOnTrue(new elevPID(elevator, 94));
+    m_driverController.povRight().toggleOnTrue(new elevPID(elevator, 40));
     m_driverController.povDown().toggleOnTrue(new elevPID(elevator, 1));
+
+    m_driverController.leftBumper().whileTrue(new ShootAlgae( algae, 1.5));
+    m_driverController.rightBumper().whileTrue(new ShootAlgae( algae, -1));
+
+    m_driverController.rightTrigger().whileTrue(new moveArm(arm, -0.25));
+    m_driverController.leftTrigger().whileTrue(new moveArm(arm, 0.25));
+    
+    
+    m_driverController.a().whileTrue(swerveSubsystem.gotoPath(
+    PathPlannerPath.waypointsFromPoses(
+    swerveSubsystem.limeLightPosition,
+    new Pose2d(2.8, 3.9, Rotation2d.fromDegrees(0)))));
+
+
+  
+    operatorController.leftBumper().toggleOnTrue(new ShootCoral(coral, -0.25));
+    operatorController.rightTrigger().onTrue((new resetEverything(swerveSubsystem,elevator)).withTimeout(0.5));
     
 
-    m_driverController.leftBumper().toggleOnTrue(new ShootCoral(coral, 0.10));
+    NamedCommands.registerCommand("Coral Outtake", new ShootCoral(coral, 0.10));
+    NamedCommands.registerCommand("L4 Elevator", new elevPID(elevator, 183));
+    NamedCommands.registerCommand("L3 Elevator", new elevPID(elevator, 87));
+    NamedCommands.registerCommand("L2 Elevator", new elevPID(elevator, 34));
+    NamedCommands.registerCommand("L1/Bottom Elevator", new elevPID(elevator, 3));
   }
     
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
@@ -109,6 +145,6 @@ public class RobotContainer {
    */
   
   public Command getAutonomousCommand() {
-    return Autos.exampleAuto();
+    return new PathPlannerAuto("Jonah Test Auto");
   }
 }

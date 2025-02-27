@@ -37,10 +37,8 @@ public class Elevator extends SubsystemBase {
             //Set Current Limit
         leftConfig.smartCurrentLimit(40);
         leftConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder);
-        leftConfig.closedLoop.pid(0.05,0,0);
+        leftConfig.closedLoop.pid(0.085,0,0);
     leftMotor.configure(leftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-
-    
     SparkMaxConfig rightConfig = new SparkMaxConfig();
     rightConfig
            .inverted(true)
@@ -53,14 +51,13 @@ public class Elevator extends SubsystemBase {
    LeftelevPID = leftMotor.getClosedLoopController();
 
   eleLimitSwitch = new DigitalInput(1);  
-        
-    
+
   }
 
   public void moveElevator(double position)
   {
     LeftelevPID.setReference(position,ControlType.kPosition, ClosedLoopSlot.kSlot0);
-    
+  
   }
 
   public boolean getLimit()

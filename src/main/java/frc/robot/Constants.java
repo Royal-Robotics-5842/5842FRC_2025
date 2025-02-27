@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.path.PathConstraints;
+
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -32,10 +34,8 @@ public final class Constants {
 
   public static final class DriveConstants
   {
-    public static final double kTrackWidth = Units.inchesToMeters(28.5); //KG TODO change number
-        // Distance between right and left wheels
-    public static final double kWheelBase = Units.inchesToMeters(28.5); //KG TODO change number
-        // Distance between front and back wheels
+    public static final double kTrackWidth = Units.inchesToMeters(28.5); // Distance between right and left wheels
+    public static final double kWheelBase = Units.inchesToMeters(28.5);  // Distance between front and back wheels
 
         public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
                 new Translation2d(kWheelBase / 2, kTrackWidth / 2), //FL
@@ -85,11 +85,18 @@ public final class Constants {
     public static final double kMaxSpeedMetersPerSecond = DriveConstants.kPhysicalMaxSpeedMetersPerSecond / 2;
     public static final double kMaxAngularSpeedRadiansPerSecond = //
             DriveConstants.kPhysicalMaxAngularSpeedRadiansPerSecond / 10;
-    public static final double kMaxAccelerationMetersPerSecondSquared = 3;
+    public static final double kMaxAccelerationMetersPerSecondSquared = 1.5;
     public static final double kMaxAngularAccelerationRadiansPerSecondSquared = Math.PI / 4;
-    public static final double kPXController = 0.5;
-    public static final double kPYController = .5;
-    public static final double kPThetaController = 1.5;
+    public static final double kPXController = 0.1;
+    public static final double kPThetaController = 0.1
+    ;
+
+    public static final PathConstraints pathPlanningConstraints = new PathConstraints(
+      kMaxSpeedMetersPerSecond,
+       kMaxAccelerationMetersPerSecondSquared,
+        kMaxAngularSpeedRadiansPerSecond,
+         kMaxAngularAccelerationRadiansPerSecondSquared
+         );
 
     public static final TrapezoidProfile.Constraints kThetaControllerConstraints = //
             new TrapezoidProfile.Constraints(
@@ -104,7 +111,9 @@ public final class Constants {
     public static final int kDriverRotAxis = 4;
     public static final int kDriverFieldOrientedButtonIdx = 5;
 
+
     public static final int kDriverControllerPort = 1;
+    public static final int kOperatorControllerPort = 0;
     public static final double kDeadband = 0.06;
   }
 }

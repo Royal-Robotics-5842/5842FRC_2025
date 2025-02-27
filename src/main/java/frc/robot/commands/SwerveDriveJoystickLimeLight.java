@@ -59,7 +59,7 @@ public class SwerveDriveJoystickLimeLight extends Command {
     ChassisSpeeds chassisSpeeds;
         if (fieldOrientedFunction.get())
             chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-                    xSpeed, ySpeed, swerveSubsystem.limelight_aim_proportional(), swerveSubsystem.getRotation2d());
+              xSpeed, ySpeed, swerveSubsystem.limelight_aim_proportional(), swerveSubsystem.getRotation2d());
          else {
             // Relative to robot
             chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, swerveSubsystem.limelight_aim_proportional());
