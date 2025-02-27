@@ -100,7 +100,7 @@ public class RobotContainer {
     m_driverController.x().toggleOnTrue(new moveElevator(elevator, -0.75));
     m_driverController.b().toggleOnTrue(new moveElevator(elevator, 0.25));
 
-    m_driverController.povUp().toggleOnTrue(new elevPID(elevator, 175));
+    m_driverController.povUp().toggleOnTrue(new elevPID(elevator, 181.5));
     m_driverController.povLeft().toggleOnTrue(new elevPID(elevator, 94));
     m_driverController.povRight().toggleOnTrue(new elevPID(elevator, 40));
     m_driverController.povDown().toggleOnTrue(new elevPID(elevator, 1));
