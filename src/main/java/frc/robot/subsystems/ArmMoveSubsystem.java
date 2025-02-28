@@ -15,6 +15,7 @@ import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ArmMoveSubsystem extends SubsystemBase {
@@ -36,14 +37,15 @@ public class ArmMoveSubsystem extends SubsystemBase {
     motor.configure(leftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     MotorPID = motor.getClosedLoopController();
   }
-
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-  }
-
   public void moveArm(double position)
   {
     MotorPID.setReference(position,ControlType.kPosition, ClosedLoopSlot.kSlot0);
   }
+  @Override
+  public void periodic() {
+    // This method will be called once per scheduler run
+    SmartDashboard.putNumber("ARM ENCODER", motor.getEncoder().getPosition());
+  }
+
+
 }

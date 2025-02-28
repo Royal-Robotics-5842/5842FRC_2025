@@ -19,6 +19,7 @@ import frc.robot.Constants.OIConstants;
 import frc.robot.commands.ShootAlgae;
 import frc.robot.commands.ShootCoral;
 import frc.robot.commands.SwerveDriveJoystick;
+import frc.robot.commands.armPID;
 import frc.robot.commands.elevPID;
 import frc.robot.commands.moveArm;
 import frc.robot.commands.moveElevator;
@@ -97,10 +98,10 @@ public class RobotContainer {
       () -> !m_driverController.y().getAsBoolean()));
 */
     m_driverController.y().toggleOnTrue(new moveElevator(elevator, 0.05));
-    m_driverController.x().toggleOnTrue(new moveElevator(elevator, -0.75));
+    m_driverController.x().toggleOnTrue(new moveElevator(elevator, -0.25));
     m_driverController.b().toggleOnTrue(new moveElevator(elevator, 0.25));
 
-    m_driverController.povUp().toggleOnTrue(new elevPID(elevator, 181.5));
+    m_driverController.povUp().toggleOnTrue(new elevPID(elevator, 178));
     m_driverController.povLeft().toggleOnTrue(new elevPID(elevator, 94));
     m_driverController.povRight().toggleOnTrue(new elevPID(elevator, 40));
     m_driverController.povDown().toggleOnTrue(new elevPID(elevator, 1));
@@ -119,9 +120,11 @@ public class RobotContainer {
 
 
   
-    operatorController.leftBumper().toggleOnTrue(new ShootCoral(coral, -0.25));
+    operatorController.leftBumper().whileTrue(new ShootCoral(coral, -0.25));
+    operatorController.rightBumper().whileTrue(new ShootCoral(coral, -0.1));
     operatorController.rightTrigger().onTrue((new resetEverything(swerveSubsystem,elevator)).withTimeout(0.5));
-    
+    operatorController.a().onTrue(new armPID(arm, 33));
+    operatorController.b().onTrue(new armPID(arm,2));
 
     NamedCommands.registerCommand("Coral Outtake", new ShootCoral(coral, 0.10));
     NamedCommands.registerCommand("L4 Elevator", new elevPID(elevator, 183));
