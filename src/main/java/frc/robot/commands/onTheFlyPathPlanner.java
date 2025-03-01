@@ -21,31 +21,34 @@ import frc.robot.subsystems.SwerveSubsystem;
 public class onTheFlyPathPlanner extends Command {
   /** Creates a new onTheFlyPathPlanner. */
   private final SwerveSubsystem swerveSubsystem;
-  public List<Waypoint> path;
-  public onTheFlyPathPlanner(SwerveSubsystem swerveSubsystem, List<Waypoint> path) {
+  public Pose2d finalPosition;
+  public Pose2d initalPose;
+  public onTheFlyPathPlanner(SwerveSubsystem swerveSubsystem, Pose2d finalPosition) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.swerveSubsystem = swerveSubsystem;
-    this.path = path;
+    this.finalPosition = finalPosition;
     addRequirements(swerveSubsystem); 
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() 
-  {}
+  {
+    initalPose = swerveSubsystem.SwerveDrivePoseEstimator.getEstimatedPosition();
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() 
   {
-    PathPlannerPath plannedPath = new PathPlannerPath(
-        path,
-        Constants.AutoConstants.pathPlanningConstraints,
-        null, // The ideal starting state, this is only relevant for pre-planned paths, so can be null for on-the-fly paths.
-        new GoalEndState(0.0, Rotation2d.fromDegrees(0)) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
-    );
+    AutoBuilder.followPath(new PathPlannerPath(
+      PathPlannerPath.waypointsFromPoses(initalPose, finalPosition),
+      Constants.AutoConstants.pathPlanningConstraints,
+     null,// The ideal starting state, this is only relevant for pre-planned paths, so can be null for on-the-fly paths.
+      new GoalEndState(0.0, Rotation2d.fromDegrees(0)) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
+  )).execute();
 
-    AutoBuilder.followPath(plannedPath).execute();
+    //swerveSubsystem.gotoPath(PathPlannerPath.waypointsFromPoses(initalPose, finalPosition));
   }
 
   // Called once the command ends or is interrupted.

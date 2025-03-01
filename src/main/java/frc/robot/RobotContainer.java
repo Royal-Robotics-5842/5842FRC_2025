@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathPlannerPath;
@@ -13,6 +16,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OIConstants;
@@ -59,9 +64,9 @@ public class RobotContainer {
   public final static double o_lefTrigger = operatorController.getLeftTriggerAxis();
   public final static double o_rightTrigger = operatorController.getRightTriggerAxis();
 
+  Set< Subsystem > set = new HashSet<>(Set.of( swerveSubsystem ));
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-   
     swerveSubsystem.setDefaultCommand(new SwerveDriveJoystick(
       swerveSubsystem,
       () -> -driverJoytick.getRawAxis(OIConstants.kDriverYAxis), // Forward/Back DO NOT TOUCH
@@ -71,7 +76,7 @@ public class RobotContainer {
     
       SmartDashboard.putBoolean("Field Centric", !m_driverController.y().getAsBoolean());
       SmartDashboard.putNumber("Robot Pitch", swerveSubsystem.gyro.getPitch());
-
+    
     configureBindings();
     
     
@@ -101,7 +106,7 @@ public class RobotContainer {
     m_driverController.x().toggleOnTrue(new moveElevator(elevator, -0.25));
     m_driverController.b().toggleOnTrue(new moveElevator(elevator, 0.25));
 
-    m_driverController.povUp().toggleOnTrue(new elevPID(elevator, 178));
+    m_driverController.povUp().toggleOnTrue(new elevPID(elevator, 17));
     m_driverController.povLeft().toggleOnTrue(new elevPID(elevator, 94));
     m_driverController.povRight().toggleOnTrue(new elevPID(elevator, 40));
     m_driverController.povDown().toggleOnTrue(new elevPID(elevator, 1));
@@ -112,13 +117,26 @@ public class RobotContainer {
     m_driverController.rightTrigger().whileTrue(new moveArm(arm, -0.25));
     m_driverController.leftTrigger().whileTrue(new moveArm(arm, 0.25));
     
+   
+    //new onTheFlyPathPlanner(swerveSubsystem, 
+    //new Pose2d(3.180 , 4.193, Rotation2d.fromDegrees(0))));
+    /*/  
+    swerveSubsystem.gotoPath(
+    PathPlannerPath.waypointsFromPoses( 
+    new Pose2d(3 , 4, Rotation2d.fromDegrees(0)),
+    new Pose2d(3.180 , 4.193, Rotation2d.fromDegrees(0)))));
+*/
+
+
+
+
+m_driverController.a().whileTrue(Commands.defer(() -> {
+  return swerveSubsystem.gotoPath(PathPlannerPath.waypointsFromPoses(
+    swerveSubsystem.SwerveDrivePoseEstimator.getEstimatedPosition(),
+    new Pose2d(3.8, 4.193, Rotation2d.fromDegrees(0)))); // Return an empty command after execution
+  }, set));
+
     
-    m_driverController.a().whileTrue(swerveSubsystem.gotoPath(
-    PathPlannerPath.waypointsFromPoses(
-    swerveSubsystem.limeLightPosition,
-    new Pose2d(2.8, 3.9, Rotation2d.fromDegrees(0)))));
-
-
   
     operatorController.leftBumper().whileTrue(new ShootCoral(coral, -0.25));
     operatorController.rightBumper().whileTrue(new ShootCoral(coral, -0.1));
@@ -148,6 +166,6 @@ public class RobotContainer {
    */
   
   public Command getAutonomousCommand() {
-    return new PathPlannerAuto("Jonah Test Auto");
+    return new PathPlannerAuto("IKA Reef Cycle");
   }
 }
