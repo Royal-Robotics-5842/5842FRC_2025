@@ -21,6 +21,9 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OIConstants;
+import frc.robot.Constants.AutoConstants.Side;
+import frc.robot.commands.Positoning;
+import frc.robot.commands.PostioningCopy;
 import frc.robot.commands.ShootAlgae;
 import frc.robot.commands.ShootCoral;
 import frc.robot.commands.SwerveDriveJoystick;
@@ -102,9 +105,35 @@ public class RobotContainer {
       () -> -driverJoytick.getRawAxis(OIConstants.kDriverXAxis), // Left/Right
       () -> !m_driverController.y().getAsBoolean()));
 */
+/*
+    m_driverController.a().onTrue(Commands.defer(() -> {
+    return new Command() {
+      @Override
+      public void execute() {
+        swerveSubsystem.gotoPath(Side.left);
+      }
+    }; // Return an empty command after execution
+    }, set));
+*/
+    /*m_driverController.a().onTrue(Commands.defer(() -> {
+      return swerveSubsystem.gotoPath(Side.left); // Return an empty command after execution
+      }, set));*/
+
+      
+    m_driverController.a().whileTrue(Commands.defer(() -> {
+      return new Positoning(swerveSubsystem,Side.left); // Return an empty command after execution
+      }, set));
+
     m_driverController.y().toggleOnTrue(new moveElevator(elevator, 0.05));
     m_driverController.x().toggleOnTrue(new moveElevator(elevator, -0.25));
-    m_driverController.b().toggleOnTrue(new moveElevator(elevator, 0.25));
+    //m_driverController.b().onTrue(Commands.defer(() -> {
+     // return swerveSubsystem.gotoPath(Side.right); // Return an empty command after execution
+     // }, set));
+
+     m_driverController.b().whileTrue(Commands.defer(() -> {
+      return new Positoning(swerveSubsystem, Side.right); // Return an empty command after execution
+      }, set));
+
 
     m_driverController.povUp().toggleOnTrue(new elevPID(elevator, 17));
     m_driverController.povLeft().toggleOnTrue(new elevPID(elevator, 94));
@@ -114,33 +143,15 @@ public class RobotContainer {
     m_driverController.leftBumper().whileTrue(new ShootAlgae( algae, 1.5));
     m_driverController.rightBumper().whileTrue(new ShootAlgae( algae, -1));
 
-    m_driverController.rightTrigger().whileTrue(new moveArm(arm, -0.25));
+    //m_driverController.rightTrigger().whileTrue(new moveArm(arm, -0.25));
     m_driverController.leftTrigger().whileTrue(new moveArm(arm, 0.25));
-    
-   
-    //new onTheFlyPathPlanner(swerveSubsystem, 
-    //new Pose2d(3.180 , 4.193, Rotation2d.fromDegrees(0))));
-    /*/  
-    swerveSubsystem.gotoPath(
-    PathPlannerPath.waypointsFromPoses( 
-    new Pose2d(3 , 4, Rotation2d.fromDegrees(0)),
-    new Pose2d(3.180 , 4.193, Rotation2d.fromDegrees(0)))));
-*/
 
-
-
-
-m_driverController.a().whileTrue(Commands.defer(() -> {
-  return swerveSubsystem.gotoPath(PathPlannerPath.waypointsFromPoses(
-    swerveSubsystem.SwerveDrivePoseEstimator.getEstimatedPosition(),
-    new Pose2d(3.8, 4.193, Rotation2d.fromDegrees(0)))); // Return an empty command after execution
-  }, set));
-
+  
     
   
     operatorController.leftBumper().whileTrue(new ShootCoral(coral, -0.25));
     operatorController.rightBumper().whileTrue(new ShootCoral(coral, -0.1));
-    operatorController.rightTrigger().onTrue((new resetEverything(swerveSubsystem,elevator)).withTimeout(0.5));
+    m_driverController.rightTrigger().onTrue((new resetEverything(swerveSubsystem,elevator)).withTimeout(0.5));
     operatorController.a().onTrue(new armPID(arm, 33));
     operatorController.b().onTrue(new armPID(arm,2));
 

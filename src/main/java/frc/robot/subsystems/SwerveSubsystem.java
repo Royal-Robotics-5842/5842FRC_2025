@@ -17,7 +17,9 @@ import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -26,6 +28,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -34,6 +37,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.AutoConstants.Side;
 import frc.robot.LimelightHelpers;
 
 //Making the SwerveModules with all the different paramters
@@ -66,6 +70,7 @@ public class SwerveSubsystem extends SubsystemBase {
             DriveConstants.kBackRightDriveMotorReversed,
             DriveConstants.kBackRightTurningMotorReversed,
             DriveConstants.kBackRightTurnAbsoluteEncoderPort);
+    public Pose2d lastPose;
 
     //Old way of constructing //public final AHRS gyro = new AHRS(SPI.Port.kMXP); //Defineing the Gyro
     public final AHRS gyro = new AHRS(NavXComType.kMXP_SPI);
@@ -80,10 +85,25 @@ public class SwerveSubsystem extends SubsystemBase {
       backRight.getPosition()
     });
 
+    public void setLastPose(Pose2d pose2d) {
+      lastPose = pose2d;
+    }
+
     
     public final Field2d m_field = new Field2d(); //For Glass
     
     RobotConfig config;
+    public DriverStation.Alliance allianceColor;
+    Pose2d finalPose = new Pose2d();
+
+    public HolonomicDriveController holo = new HolonomicDriveController(
+      new PIDController(Constants.AutoConstants.kPXController, 0, 0), 
+      new PIDController(Constants.AutoConstants.kPXController, 0, 0),
+      new ProfiledPIDController(Constants.AutoConstants.kPThetaController, 0, 0,
+      new TrapezoidProfile.Constraints(6.25, 3.14)));
+  
+
+
     // Basic targeting data
     
     public SwerveSubsystem() { 
@@ -110,8 +130,8 @@ public class SwerveSubsystem extends SubsystemBase {
       this::getRobotRelativeSpeeds,   
       (speeds, feedforwards) -> driveRobotRelative(speeds),
       new PPHolonomicDriveController(
-        new PIDConstants(Constants.AutoConstants.kPXController, 0.0, 0.0),
-        new PIDConstants(Constants.AutoConstants.kPThetaController, 0.0, 0.0)
+        new PIDConstants(Constants.AutoConstants.kPXController, 0.0, 0.1),
+        new PIDConstants(Constants.AutoConstants.kPThetaController, 0.0, 0.1)
       ), 
       config,
       () -> {
@@ -129,16 +149,22 @@ public class SwerveSubsystem extends SubsystemBase {
     );
 
 }
-  public Command gotoPath(List<Waypoint> path) {
-      PathPlannerPath plannedPath = new PathPlannerPath(path,
-        Constants.AutoConstants.pathPlanningConstraints,
+
+ChassisSpeeds speeds;
+    /*
+      PathPlannerPath plannedPath = new PathPlannerPath(
+        PathPlannerPath.waypointsFromPoses(
+        SwerveDrivePoseEstimator.getEstimatedPosition(), 
+        finalPose),
+
+      Constants.AutoConstants.pathPlanningConstraints,
        null,// The ideal starting state, this is only relevant for pre-planned paths, so can be null for on-the-fly paths.
         new GoalEndState(0.0, Rotation2d.fromDegrees(0)) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
     );
     plannedPath.preventFlipping = true;
-    System.out.println("HIIIIII");
     return AutoBuilder.followPath(plannedPath);
-  }
+    */
+
 
  public void driveRobotRelative(ChassisSpeeds robotRelative) {
   SwerveModuleState[] targetStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(robotRelative);
@@ -214,28 +240,6 @@ public ChassisSpeeds getRobotRelativeSpeeds()
     backRight.setDesiredState(desiredStates[3]);
   }
 
-  public double limelight_aim_proportional()
-  {    
-    // kP (constant of proportionality)
-    // this is a hand-tuned number that determines the aggressiveness of our proportional control loop
-    // if it is too high, the robot will oscillate around.
-    // if it is too low, the robot will never reach its target
-    // if the robot never turns in the correct direction, kP should be inverted.
-    double targetingAngularVelocity = turningPID.calculate(LimelightHelpers.getBotPose2d("limelight-lite").getRotation().getDegrees(), 0);
-    
-
-    // tx ranges from (-hfov/2) to (hfov/2) in degrees. If your target is on the rightmost edge of 
-    // your limelight 3 feed, tx should return roughly 31 degrees.
-  
-    // convert to radians per second for our drive method
-    //targetingAngularVelocity *= Math.PI;
-
-    //invert since tx is positive when the target is to the right of the crosshair
-    //targetingAngularVelocity *= -1.0;
-    
-    return targetingAngularVelocity;
-  }
-
   public SwerveDrivePoseEstimator SwerveDrivePoseEstimator = new SwerveDrivePoseEstimator
   (Constants.DriveConstants.kDriveKinematics, getRotation2d(), new SwerveModulePosition[] {
       frontLeft.getPosition(),
@@ -256,6 +260,8 @@ public ChassisSpeeds getRobotRelativeSpeeds()
   @Override
 
   public void periodic() {
+    allianceColor = DriverStation.Alliance.Blue;
+
     double tx = LimelightHelpers.getTX("limelight-lite");  // Horizontal offset from crosshair to target in degrees
     double ty = LimelightHelpers.getTY("limelight-lite");  // Vertical offset from crosshair to target in degrees
     double ta = LimelightHelpers.getTA("limelight-lite");  // Target area (0% to 100% of image)
@@ -274,61 +280,43 @@ public ChassisSpeeds getRobotRelativeSpeeds()
       frontRight.getPosition(),
       backLeft.getPosition(),
       backRight.getPosition()});
-    
+      
+      SmartDashboard.putString("LimelightTestin1", LimelightHelpers.getBotPose3d_TargetSpace("limelight-lite").toString());
 
       boolean useMegaTag2 = true; //set to false to use MegaTag1
       boolean doRejectUpdate = false;
-      if(useMegaTag2 == false)
+      if (useMegaTag2 == true && 
+      LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-lite")!= null)
       {
-        LimelightHelpers.PoseEstimate mt1 = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-lite");
         
-        if(mt1.tagCount == 1 && mt1.rawFiducials.length == 1)
-        {
-          if(mt1.rawFiducials[0].ambiguity > .7)
-          {
-            doRejectUpdate = true;
-          }
-          if(mt1.rawFiducials[0].distToCamera > 3)
-          {
-            doRejectUpdate = true;
-          }
-        }
-        if(mt1.tagCount == 0)
-        {
-          doRejectUpdate = true;
-        }
-  
-        if(!doRejectUpdate)
-        {
-          SwerveDrivePoseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.5,.5,9999999));
-          SwerveDrivePoseEstimator.addVisionMeasurement(
-              mt1.pose,
-              mt1.timestampSeconds);
-        }
-      }
-      else if (useMegaTag2 == true)
-      {
         LimelightHelpers.SetRobotOrientation("limelight-lite", SwerveDrivePoseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
         LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-lite");
-        if(Math.abs(gyro.getRate()) > 720) // if our angular velocity is greater than 720 degrees per second, ignore vision updates
+        SmartDashboard.putNumber("MONKEY",mt2.avgTagDist);
+        if(mt2 != null)
         {
-          doRejectUpdate = true;
+          if(Math.abs(gyro.getRate()) > 720) // if our angular velocity is greater than 720 degrees per second, ignore vision updates
+          {
+            doRejectUpdate = true;
+          }
+          if(mt2.tagCount == 0)
+          {
+            doRejectUpdate = true;
+          }
+          if(mt2.avgTagDist <= 0.35)
+          {
+            doRejectUpdate = true;
+            SmartDashboard.putBoolean("LimeLight Too Close", mt2.avgTagDist <= 0.35);
+          }
+          if(!doRejectUpdate)
+          {
+            SwerveDrivePoseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7,.7,9999999));
+            SwerveDrivePoseEstimator.addVisionMeasurement(
+                mt2.pose,
+                mt2.timestampSeconds);
+          }
         }
-        if(mt2.tagCount == 0)
-        {
-          doRejectUpdate = true;
-        }
-        if(!doRejectUpdate)
-        {
-          SwerveDrivePoseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7,.7,9999999));
-          SwerveDrivePoseEstimator.addVisionMeasurement(
-              mt2.pose,
-              mt2.timestampSeconds);
-        }
+        
       }
-
-  
-
     
     SmartDashboard.putString("Robot Location", getPose().toString());
     SmartDashboard.putData(m_field);

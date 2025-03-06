@@ -3,24 +3,24 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.0,
-        "y": 2.0
+        "x": 1.1687820512820506,
+        "y": 6.98698717948718
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.3936615996957933,
-        "y": 1.1013588244796333
+        "x": 1.5624436509778439,
+        "y": 6.088346003966813
       },
       "isLocked": false,
       "linkedName": "Human Player 1"
     },
     {
       "anchor": {
-        "x": 3.953,
+        "x": 3.9,
         "y": 5.241
       },
       "prevControl": {
-        "x": 3.370154665539943,
+        "x": 3.317154665539943,
         "y": 5.580236578032062
       },
       "nextControl": null,
@@ -48,7 +48,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -55.0
+    "rotation": -53.0
   },
   "useDefaultConstraints": true
 }

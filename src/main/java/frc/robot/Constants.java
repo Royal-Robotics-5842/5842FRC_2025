@@ -87,15 +87,25 @@ public final class Constants {
             DriveConstants.kPhysicalMaxAngularSpeedRadiansPerSecond / 10;
     public static final double kMaxAccelerationMetersPerSecondSquared = 1.5;
     public static final double kMaxAngularAccelerationRadiansPerSecondSquared = Math.PI / 4;
-    public static final double kPXController = 5;//0.0776699309;
-    public static final double kPThetaController = 2;
+    public static final double kPXController = 2;//0.0776699309;
+    public static final double kPThetaController = 2.5;
 
     public static final PathConstraints pathPlanningConstraints = new PathConstraints(
-      kMaxSpeedMetersPerSecond/2,
-       kMaxAccelerationMetersPerSecondSquared/2,
-        kMaxAngularSpeedRadiansPerSecond/2,
-         kMaxAngularAccelerationRadiansPerSecondSquared/2
+      kMaxSpeedMetersPerSecond,
+       kMaxAccelerationMetersPerSecondSquared,
+        kMaxAngularSpeedRadiansPerSecond,
+         kMaxAngularAccelerationRadiansPerSecondSquared
          );
+
+    public static final double reef_offset_x = 0;
+    public static final double reef_offset_left = 0.5
+    ;
+    public static final double reef_distance_offset = 0;
+    public enum Side {
+      left,
+      right,
+      middle
+    }
 
     public static final TrapezoidProfile.Constraints kThetaControllerConstraints = //
             new TrapezoidProfile.Constraints(
