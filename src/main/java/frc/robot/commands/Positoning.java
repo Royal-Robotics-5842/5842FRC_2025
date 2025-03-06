@@ -94,7 +94,8 @@ public class Positoning extends Command {
         
         finalPose.getRotation());
         break;
-      case right:
+      
+        case right:
       offsetPosition = new Pose2d(
         (finalPose.getX()) + 
         (Constants.AutoConstants.reef_offset_left * (Math.sin(finalPose.getRotation().getRadians()))), 
@@ -105,8 +106,9 @@ public class Positoning extends Command {
         finalPose.getRotation());
         
         break;
+      
       case middle:
-      offsetPosition = new Pose2d(finalPose.getX(),finalPose.getY(), Rotation2d.fromDegrees(0));
+      offsetPosition = new Pose2d(offsetPosition.getX(),offsetPosition.getY(), offsetPosition.getRotation());
         break;
     }
     
@@ -117,7 +119,7 @@ public class Positoning extends Command {
   @Override
   public void execute() 
   {
-    speeds = swerve.holo.calculate(swerve.getLimelightPose2d(), 
+    speeds = swerve.holonomicController.calculate(swerve.getLimelightPose2d(), 
     offsetPosition, 0, offsetPosition.getRotation());
     
     swerve.setModuleStates(Constants.DriveConstants.kDriveKinematics.toSwerveModuleStates(speeds));

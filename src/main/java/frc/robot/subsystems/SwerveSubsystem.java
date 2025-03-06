@@ -85,6 +85,16 @@ public class SwerveSubsystem extends SubsystemBase {
       backRight.getPosition()
     });
 
+    public SwerveDrivePoseEstimator SwerveDrivePoseEstimator = new SwerveDrivePoseEstimator
+      (Constants.DriveConstants.kDriveKinematics, getRotation2d(), new SwerveModulePosition[] {
+      frontLeft.getPosition(),
+      frontRight.getPosition(),
+      backLeft.getPosition(),
+      backRight.getPosition()}, Pose2d.kZero,
+          VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5)),
+          VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(30)));
+
+
     public void setLastPose(Pose2d pose2d) {
       lastPose = pose2d;
     }
@@ -96,7 +106,7 @@ public class SwerveSubsystem extends SubsystemBase {
     public DriverStation.Alliance allianceColor;
     Pose2d finalPose = new Pose2d();
 
-    public HolonomicDriveController holo = new HolonomicDriveController(
+    public HolonomicDriveController holonomicController = new HolonomicDriveController(
       new PIDController(Constants.AutoConstants.kPXController, 0, 0), 
       new PIDController(Constants.AutoConstants.kPXController, 0, 0),
       new ProfiledPIDController(Constants.AutoConstants.kPThetaController, 0, 0,
@@ -240,37 +250,10 @@ public ChassisSpeeds getRobotRelativeSpeeds()
     backRight.setDesiredState(desiredStates[3]);
   }
 
-  public SwerveDrivePoseEstimator SwerveDrivePoseEstimator = new SwerveDrivePoseEstimator
-  (Constants.DriveConstants.kDriveKinematics, getRotation2d(), new SwerveModulePosition[] {
-      frontLeft.getPosition(),
-      frontRight.getPosition(),
-      backLeft.getPosition(),
-      backRight.getPosition()}, Pose2d.kZero,
-          VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5)),
-          VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(30)));
-
-  public double limelight_range_proportional()
-  {    
-    double kP = 0.05;
-    double targetingForwardSpeed = LimelightHelpers.getTY("limelight-lite") * kP;
-    targetingForwardSpeed *= Constants.DriveConstants.kTeleDriveMaxSpeedMetersPerSecond;
-    targetingForwardSpeed *= -1.0;
-    return targetingForwardSpeed;
-  }
   @Override
 
   public void periodic() {
     allianceColor = DriverStation.Alliance.Blue;
-
-    double tx = LimelightHelpers.getTX("limelight-lite");  // Horizontal offset from crosshair to target in degrees
-    double ty = LimelightHelpers.getTY("limelight-lite");  // Vertical offset from crosshair to target in degrees
-    double ta = LimelightHelpers.getTA("limelight-lite");  // Target area (0% to 100% of image)
-    boolean hasTarget = LimelightHelpers.getTV("limelight-lite"); // Do you have a valid target?
-
-  
-    double txnc = LimelightHelpers.getTXNC("limelight-lite");  // Horizontal offset from principal pixel/point to target in degrees
-    double tync = LimelightHelpers.getTYNC("limelight-lite");  // Vertical  offset from principal pixel/point to target in degrees
-
 
     //ALL OF THIS HAPPENS 5 TIMES A SECOND
     //Just stuff for debugging and for Driver!
