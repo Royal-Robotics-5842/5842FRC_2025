@@ -11,40 +11,9 @@
           }
         },
         {
-          "type": "sequential",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "L4"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Shoot Coral"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "L0"
-                }
-              }
-            ]
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "Coral I Reverse"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Shoot Coral"
           }
         },
         {
@@ -54,71 +23,15 @@
           }
         },
         {
-          "type": "sequential",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "L4"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Shoot Coral"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "L0"
-                }
-              }
-            ]
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "Coral K Reverse"
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "Shoot Coral"
-          }
-        },
-        {
           "type": "path",
           "data": {
-            "pathName": "Coral A"
-          }
-        },
-        {
-          "type": "sequential",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "L4"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Shoot Coral"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "L0"
-                }
-              }
-            ]
+            "pathName": "Coral L"
           }
         }
       ]

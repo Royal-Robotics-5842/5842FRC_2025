@@ -35,6 +35,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.AutoConstants.Side;
@@ -70,55 +71,29 @@ public class SwerveSubsystem extends SubsystemBase {
             DriveConstants.kBackRightDriveMotorReversed,
             DriveConstants.kBackRightTurningMotorReversed,
             DriveConstants.kBackRightTurnAbsoluteEncoderPort);
-    public Pose2d lastPose;
-
-    //Old way of constructing //public final AHRS gyro = new AHRS(SPI.Port.kMXP); //Defineing the Gyro
-    public final AHRS gyro = new AHRS(NavXComType.kMXP_SPI);
-    public final PIDController turningPID = new PIDController(0.012, 0, 0);
-
-    //THIS IS JUST FOR TRAJECTORIES
-    private final SwerveDriveOdometry odometer = new SwerveDriveOdometry(DriveConstants.kDriveKinematics,
-    new Rotation2d(0),  new SwerveModulePosition[] {
-      frontLeft.getPosition(),
-      frontRight.getPosition(),
-      backLeft.getPosition(),
-      backRight.getPosition()
-    });
-
-    public SwerveDrivePoseEstimator SwerveDrivePoseEstimator = new SwerveDrivePoseEstimator
-      (Constants.DriveConstants.kDriveKinematics, getRotation2d(), new SwerveModulePosition[] {
-      frontLeft.getPosition(),
-      frontRight.getPosition(),
-      backLeft.getPosition(),
-      backRight.getPosition()}, Pose2d.kZero,
-          VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5)),
-          VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(30)));
-
-
-    public void setLastPose(Pose2d pose2d) {
-      lastPose = pose2d;
-    }
-
     
-    public final Field2d m_field = new Field2d(); //For Glass
+  public Pose2d lastPose;  
+  public DriverStation.Alliance allianceColor;
+  public final Field2d m_field = new Field2d(); //For Glass
+  RobotConfig config;
+  ChassisSpeeds speeds;
+  Pose2d finalPose = new Pose2d();
+
+  public ProfiledPIDController thetaController = new ProfiledPIDController(Constants.AutoConstants.kPThetaController, 0, 0,
+    new TrapezoidProfile.Constraints(6.28, 3.14));
     
-    RobotConfig config;
-    public DriverStation.Alliance allianceColor;
-    Pose2d finalPose = new Pose2d();
-
-    public HolonomicDriveController holonomicController = new HolonomicDriveController(
-      new PIDController(Constants.AutoConstants.kPXController, 0, 0), 
-      new PIDController(Constants.AutoConstants.kPXController, 0, 0),
-      new ProfiledPIDController(Constants.AutoConstants.kPThetaController, 0, 0,
-      new TrapezoidProfile.Constraints(6.25, 3.14)));
-  
-
-
-    // Basic targeting data
+  public HolonomicDriveController holonomicController = new HolonomicDriveController(
+    new PIDController(Constants.AutoConstants.kPXController, 0, 0), 
+    new PIDController(Constants.AutoConstants.kPXController, 0, 0),
+      thetaController);
     
-    public SwerveSubsystem() { 
-        
-      new Thread(() -> {
+  //Old way of constructing //public final AHRS gyro = new AHRS(SPI.Port.kMXP); //Defineing the Gyro
+  public final AHRS gyro = new AHRS(NavXComType.kMXP_SPI);
+  public final PIDController turningPID = new PIDController(0.012, 0, 0);
+
+  public SwerveSubsystem() { 
+    thetaController.enableContinuousInput(-180, 180);
+    new Thread(() -> {
         try {
             Thread.sleep(1000);
             zeroHeading();
@@ -126,7 +101,7 @@ public class SwerveSubsystem extends SubsystemBase {
         }
     }).start();
 
-     try{
+    try{
       config = RobotConfig.fromGUISettings();
     } catch (Exception e) {
       // Handle exception as needed
@@ -141,7 +116,7 @@ public class SwerveSubsystem extends SubsystemBase {
       (speeds, feedforwards) -> driveRobotRelative(speeds),
       new PPHolonomicDriveController(
         new PIDConstants(Constants.AutoConstants.kPXController, 0.0, 0.1),
-        new PIDConstants(Constants.AutoConstants.kPThetaController, 0.0, 0.1)
+        new PIDConstants(Constants.AutoConstants.kPThetaController, 0.25, 0.2)
       ), 
       config,
       () -> {
@@ -160,7 +135,6 @@ public class SwerveSubsystem extends SubsystemBase {
 
 }
 
-ChassisSpeeds speeds;
     /*
       PathPlannerPath plannedPath = new PathPlannerPath(
         PathPlannerPath.waypointsFromPoses(
@@ -174,34 +148,60 @@ ChassisSpeeds speeds;
     plannedPath.preventFlipping = true;
     return AutoBuilder.followPath(plannedPath);
     */
+    
+    //THIS IS JUST FOR TRAJECTORIES
+  private final SwerveDriveOdometry odometer = new SwerveDriveOdometry(DriveConstants.kDriveKinematics,
+    new Rotation2d(0),  new SwerveModulePosition[] {
+      frontLeft.getPosition(),
+      frontRight.getPosition(),
+      backLeft.getPosition(),
+      backRight.getPosition()
+    });
+
+  public SwerveDrivePoseEstimator SwerveDrivePoseEstimator = new SwerveDrivePoseEstimator
+    (Constants.DriveConstants.kDriveKinematics, getRotation2d(), new SwerveModulePosition[] 
+    {
+      frontLeft.getPosition(),
+      frontRight.getPosition(),
+      backLeft.getPosition(),
+      backRight.getPosition()
+    }, 
+    Pose2d.kZero,
+    VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5)),
+    VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(30)));
 
 
- public void driveRobotRelative(ChassisSpeeds robotRelative) {
-  SwerveModuleState[] targetStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(robotRelative);
-  setModuleStates(targetStates);
- }
+  public void setLastPose(Pose2d pose2d) 
+  {
+    lastPose = pose2d;
+  }
+
+  public void driveRobotRelative(ChassisSpeeds robotRelative) 
+  {
+    SwerveModuleState[] targetStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(robotRelative);
+    setModuleStates(targetStates);
+  }
+
+  public SwerveModuleState[] getModuleStates()
+  {
+    SwerveModuleState[] states = new SwerveModuleState[] {
+      frontRight.getState(),
+      frontLeft.getState(),
+      backRight.getState(),
+      backLeft.getState()
+    };
+    return states;
+  }
+
+  public ChassisSpeeds getRobotRelativeSpeeds() 
+  {
+    return DriveConstants.kDriveKinematics.toChassisSpeeds(getModuleStates());
+  }
 
 
-public SwerveModuleState[] getModuleStates()
-{
-  SwerveModuleState[] states = new SwerveModuleState[] {
-    frontRight.getState(),
-    frontLeft.getState(),
-    backRight.getState(),
-    backLeft.getState()
-  };
-
-  return states;
-}
-
-public ChassisSpeeds getRobotRelativeSpeeds() 
-{
-  return DriveConstants.kDriveKinematics.toChassisSpeeds(getModuleStates());
-}
-
-
-  public void zeroHeading() {
-      gyro.reset(); //Making all values 0 (Pitch, Yaw, Roll)
+  public void zeroHeading() 
+  {
+    gyro.reset(); //Making all values 0 (Pitch, Yaw, Roll)
   }
   
   public double getHeading() 
@@ -215,7 +215,8 @@ public ChassisSpeeds getRobotRelativeSpeeds()
   }
   
   //FOR TRAJECTORIES
-  public Pose2d getPose() {
+  public Pose2d getPose() 
+  {
     return odometer.getPoseMeters();
   } 
 
@@ -224,13 +225,15 @@ public ChassisSpeeds getRobotRelativeSpeeds()
   } 
 
   //FOR TRAJECTORIES
-  public void resetOdometry(Pose2d pose) {
+  public void resetOdometry(Pose2d pose) 
+  {
     odometer.resetPosition(getRotation2d(), new SwerveModulePosition[] {
       frontLeft.getPosition(),
       frontRight.getPosition(),
       backLeft.getPosition(),
       backRight.getPosition()
-     } ,pose);
+     } 
+     ,pose);
   }
 
   public void stopModules() 
@@ -253,20 +256,29 @@ public ChassisSpeeds getRobotRelativeSpeeds()
   @Override
 
   public void periodic() {
-    allianceColor = DriverStation.Alliance.Blue;
-
-    //ALL OF THIS HAPPENS 5 TIMES A SECOND
-    //Just stuff for debugging and for Driver!
-
-      odometer.update(getRotation2d(), new SwerveModulePosition[] {
+    SwerveDrivePoseEstimator.update(gyro.getRotation2d(), new SwerveModulePosition[] {
       frontLeft.getPosition(),
       frontRight.getPosition(),
       backLeft.getPosition(),
       backRight.getPosition()});
-      
-      SmartDashboard.putString("LimelightTestin1", LimelightHelpers.getBotPose3d_TargetSpace("limelight-lite").toString());
+    
+    m_field.setRobotPose(getLimelightPose2d());//odometer.getPoseMeters());
+    //ALL OF THIS HAPPENS 5 TIMES A SECOND
+    //Just stuff for debugging and for Driver!
 
-      boolean useMegaTag2 = true; //set to false to use MegaTag1
+    odometer.update(getRotation2d(), new SwerveModulePosition[] {
+    frontLeft.getPosition(),
+    frontRight.getPosition(),
+    backLeft.getPosition(),
+    backRight.getPosition()});
+      
+    allianceColor = DriverStation.Alliance.Blue;
+    
+    SmartDashboard.putData(m_field);
+    SmartDashboard.putString("Robot Location (ODEMETER)", getPose().toString());
+    SmartDashboard.putString("LimeLightPoseEstimate", SwerveDrivePoseEstimator.getEstimatedPosition().toString());
+    
+    boolean useMegaTag2 = true; //set to false to use MegaTag1
       boolean doRejectUpdate = false;
       if (useMegaTag2 == true && 
       LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-lite")!= null)
@@ -275,53 +287,27 @@ public ChassisSpeeds getRobotRelativeSpeeds()
         LimelightHelpers.SetRobotOrientation("limelight-lite", SwerveDrivePoseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
         LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-lite");
         SmartDashboard.putNumber("MONKEY",mt2.avgTagDist);
-        if(mt2 != null)
-        {
-          if(Math.abs(gyro.getRate()) > 720) // if our angular velocity is greater than 720 degrees per second, ignore vision updates
-          {
-            doRejectUpdate = true;
-          }
-          if(mt2.tagCount == 0)
-          {
-            doRejectUpdate = true;
-          }
-          if(mt2.avgTagDist <= 0.35)
-          {
-            doRejectUpdate = true;
-            SmartDashboard.putBoolean("LimeLight Too Close", mt2.avgTagDist <= 0.35);
-          }
-          if(!doRejectUpdate)
-          {
-            SwerveDrivePoseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7,.7,9999999));
-            SwerveDrivePoseEstimator.addVisionMeasurement(
-                mt2.pose,
-                mt2.timestampSeconds);
-          }
-        }
         
+    if(mt2 != null)
+    {
+      if(Math.abs(gyro.getRate()) > 720) // if our angular velocity is greater than 720 degrees per second, ignore vision updates
+      {
+        doRejectUpdate = true;
       }
+      if(mt2.tagCount == 0)
+      {
+        doRejectUpdate = true;
+      }
+      if(!doRejectUpdate)
+      {
+        SwerveDrivePoseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7,.7,9999999));
+        SwerveDrivePoseEstimator.addVisionMeasurement(
+            mt2.pose,
+            mt2.timestampSeconds);
+      }
+    }
     
-    SmartDashboard.putString("Robot Location", getPose().toString());
-    SmartDashboard.putData(m_field);
-
-    
-    SmartDashboard.putNumber("Turn BL", backLeft.getTurningPosition());
-    SmartDashboard.putNumber("Turn FL", frontLeft.getTurningPosition());
-    SmartDashboard.putNumber("Turn BR", backRight.getTurningPosition());
-    SmartDashboard.putNumber("Turn FR", frontRight.getTurningPosition());
-
-    SmartDashboard.putString("LimeLightPose", LimelightHelpers.getBotPose2d("limelight-lite").toString());
-    SmartDashboard.putString("LimeLightPoseEstimate", SwerveDrivePoseEstimator.getEstimatedPosition().toString());
-    
-    SwerveDrivePoseEstimator.update(gyro.getRotation2d(), new SwerveModulePosition[] {
-      frontLeft.getPosition(),
-      frontRight.getPosition(),
-      backLeft.getPosition(),
-      backRight.getPosition()});
-    m_field.setRobotPose(SwerveDrivePoseEstimator.getEstimatedPosition());//odometer.getPoseMeters());
-  
-    Pose2d limeLightPosition = LimelightHelpers.getBotPose2d_wpiBlue("limelight-lite");
-
+  }
   }
 
 }

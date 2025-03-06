@@ -4,11 +4,19 @@
 
 package frc.robot.commands;
 
+import java.util.ArrayList;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import frc.robot.Constants;
 import frc.robot.Constants.AutoConstants.Side;
 import frc.robot.LimelightHelpers;
@@ -19,9 +27,11 @@ public class Positoning extends Command {
   /** Creates a new Positoning. */
   SwerveSubsystem swerve;
   ChassisSpeeds speeds;
+  Trajectory trajectory3;
   Pose2d finalPose = new Pose2d();
   Pose2d offsetPosition = new Pose2d();
   Side side;
+
   public Positoning(SwerveSubsystem swerve, Side side) {
     this.swerve = swerve;
     this.side = side;
@@ -66,7 +76,7 @@ public class Positoning extends Command {
           finalPose = new Pose2d(4.048, 3.251, Rotation2d.fromDegrees(60));
           break;
         case 18:
-          finalPose = new Pose2d(3.7,4.020,Rotation2d.fromDegrees(0.0));
+          finalPose = new Pose2d(3.7,4.020,Rotation2d.fromDegrees(0));
           break;
         case 19:
           finalPose = new Pose2d(4.1, 4.83, Rotation2d.fromDegrees(-60));
@@ -78,7 +88,7 @@ public class Positoning extends Command {
           finalPose = new Pose2d(5.4,4.02,Rotation2d.fromDegrees(-180));
           break;
         case 22:
-          finalPose = new Pose2d(4.967,3.241,Rotation2d.fromDegrees(120));
+          finalPose = new Pose2d(4.967,3.241, Rotation2d.fromDegrees(120));
           break;
       }
     }
@@ -95,7 +105,7 @@ public class Positoning extends Command {
         finalPose.getRotation());
         break;
       
-        case right:
+      case right:
       offsetPosition = new Pose2d(
         (finalPose.getX()) + 
         (Constants.AutoConstants.reef_offset_left * (Math.sin(finalPose.getRotation().getRadians()))), 
@@ -112,8 +122,10 @@ public class Positoning extends Command {
         break;
     }
     
-    swerve.setLastPose(finalPose);
+     swerve.setLastPose(finalPose);
+
   }
+
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -122,11 +134,13 @@ public class Positoning extends Command {
     speeds = swerve.holonomicController.calculate(swerve.getLimelightPose2d(), 
     offsetPosition, 0, offsetPosition.getRotation());
     
-    swerve.setModuleStates(Constants.DriveConstants.kDriveKinematics.toSwerveModuleStates(speeds));
+    swerve.setModuleStates(Constants.DriveConstants.kDriveKinematics.toSwerveModuleStates(speeds.times(0.5)));
 
     System.out.println("FINAL POSE" + finalPose.toString());
     System.out.println("Offeset 1" + offsetPosition.toString());
     System.out.println("Rotation" + finalPose.getRotation().getDegrees());
+    
+    
     SmartDashboard.putString("OffsetPose", offsetPosition.toString());
     //swerve.setLastPose(finalPose);
   }

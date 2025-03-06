@@ -12,11 +12,9 @@ import frc.robot.subsystems.SwerveSubsystem;
 
 public class resetEverything extends Command {
   private final SwerveSubsystem swerve;
-  private final Elevator elevator;
-  public resetEverything(SwerveSubsystem swerve, Elevator elevator) {
+  public resetEverything(SwerveSubsystem swerve) {
     this.swerve = swerve;
-    this.elevator = elevator;
-    addRequirements(swerve, elevator);
+    addRequirements(swerve);
   
   }
 

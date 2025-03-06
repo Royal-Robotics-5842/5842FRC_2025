@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.1687820512820506,
-        "y": 6.98698717948718
+        "x": 5.323,
+        "y": 5.073
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.2990251068376075,
-        "y": 6.3618482905982905
+        "x": 6.1396646024629735,
+        "y": 5.066034367927175
       },
       "isLocked": false,
-      "linkedName": "Human Player 1"
+      "linkedName": "Coral I"
     },
     {
       "anchor": {
-        "x": 5.336979166666667,
-        "y": 5.115104166666666
+        "x": 1.1687820512820506,
+        "y": 6.98698717948718
       },
       "prevControl": {
-        "x": 4.652170138888888,
-        "y": 5.548350694444444
+        "x": 0.10350687284550042,
+        "y": 7.0428824328756745
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Human Player 1"
     }
   ],
   "rotationTargets": [],
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -122.34744349944208
+    "rotation": -53.0
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -53.0
+    "rotation": -119.99999999999999
   },
   "useDefaultConstraints": true
 }

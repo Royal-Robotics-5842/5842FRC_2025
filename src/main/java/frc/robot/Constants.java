@@ -88,7 +88,7 @@ public final class Constants {
     public static final double kMaxAccelerationMetersPerSecondSquared = 1.5;
     public static final double kMaxAngularAccelerationRadiansPerSecondSquared = Math.PI / 4;
     public static final double kPXController = 2;//0.0776699309;
-    public static final double kPThetaController = 2.5;
+    public static final double kPThetaController = 6;
 
     public static final PathConstraints pathPlanningConstraints = new PathConstraints(
       kMaxSpeedMetersPerSecond,
@@ -98,7 +98,7 @@ public final class Constants {
          );
 
     public static final double reef_offset_x = 0;
-    public static final double reef_offset_left = 0.5
+    public static final double reef_offset_left = 0.21
     ;
     public static final double reef_distance_offset = 0;
     public enum Side {
@@ -112,6 +112,25 @@ public final class Constants {
                     kMaxAngularSpeedRadiansPerSecond,
                     kMaxAngularAccelerationRadiansPerSecondSquared);
   }
+
+  public static final class elevatorConstants
+  {
+    public static final double L1_height = 3;
+    public static final double L2_height = 40;
+    public static final double L3_height = 85;
+    public static final double l4_height = 0;
+    public static final double bottom_height = 1;
+  }
+
+  public static final class armConstants
+  {
+    public static final double groundPickup = 0;
+    public static final double processor = 0;
+    public static final double barge = 0;
+    public static final double lowerReef = 0;
+    public static final double higherReef = 0;
+  }
+
   public static final class OIConstants
   {
 

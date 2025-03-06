@@ -7,6 +7,7 @@ package frc.robot;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathPlannerPath;
@@ -14,6 +15,7 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -23,7 +25,6 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.AutoConstants.Side;
 import frc.robot.commands.Positoning;
-import frc.robot.commands.PostioningCopy;
 import frc.robot.commands.ShootAlgae;
 import frc.robot.commands.ShootCoral;
 import frc.robot.commands.SwerveDriveJoystick;
@@ -46,6 +47,7 @@ import frc.robot.subsystems.SwerveSubsystem;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
+  private final SendableChooser<Command> autoChooser;
 
   // The robot's subsystems are defined here...
   private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
@@ -70,6 +72,8 @@ public class RobotContainer {
   Set< Subsystem > set = new HashSet<>(Set.of( swerveSubsystem ));
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    autoChooser = AutoBuilder.buildAutoChooser("Testing");
+    SmartDashboard.putData("Auto Chooser", autoChooser);
     swerveSubsystem.setDefaultCommand(new SwerveDriveJoystick(
       swerveSubsystem,
       () -> -driverJoytick.getRawAxis(OIConstants.kDriverYAxis), // Forward/Back DO NOT TOUCH
@@ -130,15 +134,15 @@ public class RobotContainer {
      // return swerveSubsystem.gotoPath(Side.right); // Return an empty command after execution
      // }, set));
 
-     m_driverController.b().whileTrue(Commands.defer(() -> {
+    m_driverController.b().whileTrue(Commands.defer(() -> {
       return new Positoning(swerveSubsystem, Side.right); // Return an empty command after execution
       }, set));
 
 
-    m_driverController.povUp().toggleOnTrue(new elevPID(elevator, 17));
-    m_driverController.povLeft().toggleOnTrue(new elevPID(elevator, 94));
-    m_driverController.povRight().toggleOnTrue(new elevPID(elevator, 40));
-    m_driverController.povDown().toggleOnTrue(new elevPID(elevator, 1));
+    m_driverController.povUp().toggleOnTrue(new elevPID(elevator, Constants.elevatorConstants.l4_height));
+    m_driverController.povLeft().toggleOnTrue(new elevPID(elevator, Constants.elevatorConstants.L3_height));
+    m_driverController.povRight().toggleOnTrue(new elevPID(elevator, Constants.elevatorConstants.L2_height));
+    m_driverController.povDown().toggleOnTrue(new elevPID(elevator, Constants.elevatorConstants.bottom_height));
 
     m_driverController.leftBumper().whileTrue(new ShootAlgae( algae, 1.5));
     m_driverController.rightBumper().whileTrue(new ShootAlgae( algae, -1));
@@ -151,15 +155,15 @@ public class RobotContainer {
   
     operatorController.leftBumper().whileTrue(new ShootCoral(coral, -0.25));
     operatorController.rightBumper().whileTrue(new ShootCoral(coral, -0.1));
-    m_driverController.rightTrigger().onTrue((new resetEverything(swerveSubsystem,elevator)).withTimeout(0.5));
-    operatorController.a().onTrue(new armPID(arm, 33));
-    operatorController.b().onTrue(new armPID(arm,2));
+    m_driverController.rightTrigger().onTrue((new resetEverything(swerveSubsystem)).withTimeout(0.1));
+    operatorController.a().onTrue(new armPID(arm, Constants.armConstants.groundPickup));
+    operatorController.b().onTrue(new armPID(arm, Constants.armConstants.barge));
 
     NamedCommands.registerCommand("Coral Outtake", new ShootCoral(coral, 0.10));
-    NamedCommands.registerCommand("L4 Elevator", new elevPID(elevator, 183));
-    NamedCommands.registerCommand("L3 Elevator", new elevPID(elevator, 87));
-    NamedCommands.registerCommand("L2 Elevator", new elevPID(elevator, 34));
-    NamedCommands.registerCommand("L1/Bottom Elevator", new elevPID(elevator, 3));
+    NamedCommands.registerCommand("L4 Elevator", new elevPID(elevator, Constants.elevatorConstants.l4_height));
+    NamedCommands.registerCommand("L3 Elevator", new elevPID(elevator, Constants.elevatorConstants.L3_height));
+    NamedCommands.registerCommand("L2 Elevator", new elevPID(elevator, Constants.elevatorConstants.L2_height));
+    NamedCommands.registerCommand("L1/Bottom Elevator", new elevPID(elevator, Constants.elevatorConstants.bottom_height));
   }
     
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
@@ -177,6 +181,6 @@ public class RobotContainer {
    */
   
   public Command getAutonomousCommand() {
-    return new PathPlannerAuto("IKA Reef Cycle");
+    return autoChooser.getSelected();
   }
 }
