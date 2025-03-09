@@ -82,7 +82,8 @@ public class RobotContainer {
       () -> -driverJoytick.getRawAxis(OIConstants.kDriverYAxis), // Forward/Back DO NOT TOUCH
       () -> -driverJoytick.getRawAxis(OIConstants.kDriverXAxis), // Left/Right
       () -> -driverJoytick.getRawAxis(OIConstants.kDriverRotAxis),
-      () -> !m_driverController.y().getAsBoolean()));
+      () -> !m_driverController.y().getAsBoolean(),
+      elevator));
     
       SmartDashboard.putBoolean("Field Centric", !m_driverController.y().getAsBoolean());
       SmartDashboard.putNumber("Robot Pitch", swerveSubsystem.gyro.getPitch());
@@ -147,19 +148,19 @@ public class RobotContainer {
     m_driverController.povRight().toggleOnTrue(new elevPID(elevator, Constants.elevatorConstants.L2_height));
     m_driverController.povDown().toggleOnTrue(new elevPID(elevator, Constants.elevatorConstants.bottom_height));
 
-    m_driverController.leftBumper().whileTrue(new ShootAlgae( algae, 1.5));
-    m_driverController.rightBumper().whileTrue(new ShootAlgae( algae, -1));
+    operatorController.leftBumper().whileTrue(new ShootAlgae( algae, 1));
+    operatorController.rightBumper().whileTrue(new ShootAlgae( algae, -1));
 
-    //m_driverController.rightTrigger().whileTrue(new moveArm(arm, -0.25));
+    m_driverController.rightTrigger().whileTrue(new moveArm(arm, -0.25));
     m_driverController.leftTrigger().whileTrue(new moveArm(arm, 0.25));
 
   
     
   
-    operatorController.leftBumper().whileTrue(new IntakeCoral(coral, -0.25));
-    operatorController.rightBumper().whileTrue(new OuttakeCoral(coral, -0.25));
+    m_driverController.leftBumper().whileTrue(new IntakeCoral(coral, -0.25));
+    m_driverController.rightBumper().whileTrue(new OuttakeCoral(coral, -1));
 
-    m_driverController.rightTrigger().onTrue((new resetEverything(swerveSubsystem)).withTimeout(0.1));
+    operatorController.rightTrigger().onTrue((new resetEverything(swerveSubsystem)).withTimeout(0.1));
     operatorController.a().onTrue(new armPID(arm, Constants.armConstants.groundPickup));
     operatorController.b().onTrue(new armPID(arm, Constants.armConstants.barge));
 

@@ -10,26 +10,30 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.SwerveSubsystem;
 
 public class SwerveDriveJoystick extends Command {
   
   private final SwerveSubsystem swerveSubsystem;
+  private final Elevator elevator;
   private final Supplier<Double> xSpdFunction, ySpdFunction, turningSpdFunction;
   private final Supplier<Boolean> fieldOrientedFunction;
 
   private final SlewRateLimiter xLimiter, yLimiter, turningLimiter;
 
   public SwerveDriveJoystick(SwerveSubsystem swerveSubsystem, Supplier<Double> xSpdFunction, Supplier<Double> ySpdFunction, Supplier<Double> turningSpdFunction, 
-                            Supplier<Boolean> fieldOrientedFunction) { 
+                            Supplier<Boolean> fieldOrientedFunction, Elevator elevator) { 
               this.swerveSubsystem = swerveSubsystem;
               this.xSpdFunction = xSpdFunction;
               this.ySpdFunction = ySpdFunction;
               this.turningSpdFunction = turningSpdFunction;
               this.fieldOrientedFunction = fieldOrientedFunction;
+              this.elevator = elevator;
 
               this.xLimiter = new SlewRateLimiter(DriveConstants.kTeleDriveMaxAccelerationUnitsPerSecond);
               this.yLimiter = new SlewRateLimiter(DriveConstants.kTeleDriveMaxAccelerationUnitsPerSecond);
@@ -65,8 +69,17 @@ public class SwerveDriveJoystick extends Command {
 
     ChassisSpeeds chassisSpeeds;
         if (fieldOrientedFunction.get())
+        {
+          if (elevator.getPosition() > Constants.elevatorConstants.l4_height/2)
+          {
             chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
+                    xSpeed/2, ySpeed/2, turningSpeed/2, swerveSubsystem.getRotation2d());
+          }
+          else
+          {chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
                     xSpeed, ySpeed, turningSpeed, swerveSubsystem.getRotation2d());
+          }
+        }
          else {
             // Relative to robot
             chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, turningSpeed);

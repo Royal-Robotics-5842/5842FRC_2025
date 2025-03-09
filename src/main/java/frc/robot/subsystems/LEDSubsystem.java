@@ -11,16 +11,26 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class LEDSubsystem extends SubsystemBase {
   CANifier RGBLights = new CANifier(6);
-  
+  double R = 0;
+  double G = 0;
+  double B = 0;
+  boolean enabled = false;
   /** Creates a new LEDSubsystem. */
   public LEDSubsystem() {
   }
 
   @Override
   public void periodic() {
-    RGBLights.enablePWMOutput(0, true);
-    RGBLights.setLEDOutput(50, LEDChannel.LEDChannelA);
-    RGBLights.setLEDOutput(0, LEDChannel.LEDChannelB);
-    RGBLights.setLEDOutput(50, LEDChannel.LEDChannelC);
+    setColor(100, 100, 100);
+    RGBLights.enablePWMOutput(0, enabled);
+    RGBLights.setLEDOutput(R, LEDChannel.LEDChannelA);
+    RGBLights.setLEDOutput(G, LEDChannel.LEDChannelB);
+    RGBLights.setLEDOutput(B, LEDChannel.LEDChannelC);
+  }
+
+  public void setColor(double R, double G, double B) {
+    this.R = R;
+    this.G = G;
+    this.B = B;
   }
 }

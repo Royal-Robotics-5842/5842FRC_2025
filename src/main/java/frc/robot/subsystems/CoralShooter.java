@@ -7,6 +7,11 @@ package frc.robot.subsystems;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+
+import static edu.wpi.first.units.Units.Inch;
+import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.Millimeter;
+
 import com.ctre.phoenix6.hardware.CANrange;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
@@ -20,7 +25,7 @@ public class CoralShooter extends SubsystemBase {
   /** Creates a new CoralShooter. */
   public SparkMax rightMotor = new SparkMax(42, MotorType.kBrushless);
   public SparkMax leftMotor = new SparkMax(43, MotorType.kBrushless);
-  public CANrange rangeSensor =  new CANrange(0);
+  public CANrange rangeSensor =  new CANrange(8);
 
 
   public CoralShooter() 
@@ -43,10 +48,16 @@ public class CoralShooter extends SubsystemBase {
 
   }
 
+  public double getDistance()
+  {
+    return rangeSensor.getDistance().getValue().in(Inches);
+  }
 
   @Override
-  public void periodic() {
+  public void periodic() 
+  {
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber("Voltage of Coral", leftMotor.getOutputCurrent());
+    SmartDashboard.putNumber("Current of Coral", leftMotor.getOutputCurrent());
+    SmartDashboard.putNumber("Coral Distance Sensor", getDistance());
   }
 }

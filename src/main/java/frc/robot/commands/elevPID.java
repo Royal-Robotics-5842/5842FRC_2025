@@ -23,6 +23,19 @@ public class elevPID extends Command {
   @Override
   public void initialize() 
   {
+    //Top
+    if (elevator.getPosition()< position)
+    {
+      elevator.leftMotor.set(0.01);
+      elevator.rightMotor.set(0.01);
+    }
+
+    //Bottom
+    if (elevator.getPosition() > position)
+    {
+      elevator.leftMotor.set(-0.01);
+      elevator.rightMotor.set(-0.01);
+    }
     System.out.println("Elevator up/down Started");
   }
 
@@ -44,7 +57,12 @@ public class elevPID extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if((elevator.getLimit() == false))
+    if((elevator.getTopLimit() == false && elevator.rightMotor.getAppliedOutput() > 0))
+    {
+      return true;
+    }
+
+    if((elevator.getBottomLimit() == false && elevator.rightMotor.getAppliedOutput() < 0))
     {
       return true;
     }
