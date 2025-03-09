@@ -11,16 +11,100 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class LEDSubsystem extends SubsystemBase {
   CANifier RGBLights = new CANifier(6);
-  
+  int blink_count = 0;
+  int blinkPerSecond = 0;
+  double powerPercentage = 100;
+  boolean blinking = false;
+  boolean powered = false;
+
+  public enum Modes {
+    IDLE,
+    CORAL_RUN,
+    ALAGE_RUN,
+    TELEOP,
+    AUTO
+  }
+  Modes currentMode = Modes.IDLE;
+
+  int R = 0;
+  int G = 0;
+  int B = 0;
+
   /** Creates a new LEDSubsystem. */
   public LEDSubsystem() {
+    setPowerPercentage(50);
+    enable();
+  }
+
+  public void enable() {
+    powered = true;
+  }
+
+  public void disable() {
+    powered = false;
+  }
+
+  public void setMode(Modes mode) {
+    currentMode = mode;
+
+    switch (mode) {
+      case IDLE:
+        //Royal Purple
+        setColor(47,32,66);
+        setBlinking(false, 0);
+        break;
+      case CORAL_RUN:
+        //Royal Blue
+        setColor(65,105,225);
+        setBlinking(false, 0);
+        break;
+      case ALAGE_RUN:
+        //Royal Green
+        setColor(28,101,27);
+        setBlinking(false, 0);
+        break;
+      case TELEOP:
+        //Royal Purple
+        setColor(47,32,66);
+        setBlinking(true, 5);
+        break;
+      case AUTO:
+        //Royal Orange
+        setColor(249,146,69);
+        setBlinking(true, 5);
+        break;
+  
+    }
+  }
+
+  public void setPowerPercentage(double percentage) {
+    this.powerPercentage = percentage;
+  }
+
+  public void setBlinking(boolean blinking, int timesPerSecond) {
+    this.blinking = blinking;
+    this.blinkPerSecond = timesPerSecond;
+  }
+
+  public void setColor(int R, int G, int B) {
+    this.R = R;
+    this.G = G;
+    this.B = B;
   }
 
   @Override
   public void periodic() {
-    RGBLights.enablePWMOutput(0, true);
-    RGBLights.setLEDOutput(50, LEDChannel.LEDChannelA);
-    RGBLights.setLEDOutput(0, LEDChannel.LEDChannelB);
-    RGBLights.setLEDOutput(50, LEDChannel.LEDChannelC);
+    double duty_cycle =  (0.001 / 0.01) * powerPercentage; 
+    RGBLights.enablePWMOutput(0, powered);
+    RGBLights.setLEDOutput(G, LEDChannel.LEDChannelA);
+    RGBLights.setLEDOutput(R, LEDChannel.LEDChannelB);
+    RGBLights.setLEDOutput(B, LEDChannel.LEDChannelC);
+    RGBLights.setPWMOutput(0, 1000 / duty_cycle);
+
+    if(blinking && blink_count >= blinkPerSecond) {
+      blink_count = 0;
+    }
+
+    blink_count++;
   }
 }
