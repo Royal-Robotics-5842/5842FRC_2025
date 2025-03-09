@@ -98,8 +98,7 @@ public final class Constants {
          );
 
     public static final double reef_offset_x = 0;
-    public static final double reef_offset_left = 0.21
-    ;
+    public static final double reef_offset_left = 0.19;
     public static final double reef_distance_offset = 0;
     public enum Side {
       left,

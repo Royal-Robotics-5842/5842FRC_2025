@@ -93,6 +93,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
   public SwerveSubsystem() { 
     thetaController.enableContinuousInput(-180, 180);
+    gyro.reset();
     new Thread(() -> {
         try {
             Thread.sleep(1000);

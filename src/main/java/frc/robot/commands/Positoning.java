@@ -76,7 +76,7 @@ public class Positoning extends Command {
           finalPose = new Pose2d(4.048, 3.251, Rotation2d.fromDegrees(60));
           break;
         case 18:
-          finalPose = new Pose2d(3.7,4.020,Rotation2d.fromDegrees(0));
+          finalPose = new Pose2d(3.200,4.050,Rotation2d.fromDegrees(0));
           break;
         case 19:
           finalPose = new Pose2d(4.1, 4.83, Rotation2d.fromDegrees(-60));

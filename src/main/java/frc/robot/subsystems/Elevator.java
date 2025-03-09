@@ -21,9 +21,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Elevator extends SubsystemBase {
   /** Creates a new Elevator. */
-  public SparkMax leftMotor = new SparkMax(32, MotorType.kBrushless);
+  public SparkMax leftMotor = new SparkMax(01, MotorType.kBrushless);
   
-  public SparkMax rightMotor = new SparkMax(33, MotorType.kBrushless);
+  public SparkMax rightMotor = new SparkMax(02, MotorType.kBrushless);
   public SparkClosedLoopController RightelevPID;
   public SparkClosedLoopController LeftelevPID;
   public DigitalInput eleLimitSwitch;

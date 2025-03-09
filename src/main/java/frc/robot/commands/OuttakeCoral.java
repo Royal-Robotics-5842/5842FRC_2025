@@ -4,17 +4,20 @@
 
 package frc.robot.commands;
 
+import static edu.wpi.first.units.Units.Inch;
+
+import edu.wpi.first.units.DistanceUnit;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.CoralShooter;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class ShootCoral extends Command {
+public class OuttakeCoral extends Command {
   /** Creates a new ShootCoral. */
   public CoralShooter coral;
   public double speed;
   public double startTime;
-  public ShootCoral(CoralShooter coral, double speed) {
+  public OuttakeCoral(CoralShooter coral, double speed) {
     this.coral = coral;
     this.speed = speed;
     addRequirements(coral);
@@ -25,7 +28,7 @@ public class ShootCoral extends Command {
   @Override
   public void initialize() 
   {
-    startTime = coral.coralTimer.getFPGATimestamp();
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -47,12 +50,6 @@ public class ShootCoral extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    /*
-    if (coral.coralTimer.getFPGATimestamp() - startTime >= 0.5 && (coral.leftMotor.getOutputCurrent() >=20))
-    {
-      return true;
-    }
-    */
     return false;
   }
 }

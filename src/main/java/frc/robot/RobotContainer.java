@@ -26,7 +26,8 @@ import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.AutoConstants.Side;
 import frc.robot.commands.Positoning;
 import frc.robot.commands.ShootAlgae;
-import frc.robot.commands.ShootCoral;
+import frc.robot.commands.IntakeCoral;
+import frc.robot.commands.OuttakeCoral;
 import frc.robot.commands.SwerveDriveJoystick;
 import frc.robot.commands.armPID;
 import frc.robot.commands.elevPID;
@@ -38,6 +39,7 @@ import frc.robot.subsystems.AlgaeShootSubsystem;
 import frc.robot.subsystems.ArmMoveSubsystem;
 import frc.robot.subsystems.CoralShooter;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 
 /**
@@ -55,6 +57,7 @@ public class RobotContainer {
   private final CoralShooter coral = new CoralShooter();
   private final ArmMoveSubsystem arm = new ArmMoveSubsystem();
   private final AlgaeShootSubsystem algae = new AlgaeShootSubsystem();
+  private final LEDSubsystem ledSubsystem = new LEDSubsystem();
 
 
   //THe robot's commands are defined here...
@@ -129,7 +132,7 @@ public class RobotContainer {
       }, set));
 
     m_driverController.y().toggleOnTrue(new moveElevator(elevator, 0.05));
-    m_driverController.x().toggleOnTrue(new moveElevator(elevator, -0.25));
+    m_driverController.x().toggleOnTrue(new moveElevator(elevator, -0.05));
     //m_driverController.b().onTrue(Commands.defer(() -> {
      // return swerveSubsystem.gotoPath(Side.right); // Return an empty command after execution
      // }, set));
@@ -153,13 +156,14 @@ public class RobotContainer {
   
     
   
-    operatorController.leftBumper().whileTrue(new ShootCoral(coral, -0.25));
-    operatorController.rightBumper().whileTrue(new ShootCoral(coral, -0.1));
+    operatorController.leftBumper().whileTrue(new IntakeCoral(coral, -0.25));
+    operatorController.rightBumper().whileTrue(new OuttakeCoral(coral, -0.25));
+
     m_driverController.rightTrigger().onTrue((new resetEverything(swerveSubsystem)).withTimeout(0.1));
     operatorController.a().onTrue(new armPID(arm, Constants.armConstants.groundPickup));
     operatorController.b().onTrue(new armPID(arm, Constants.armConstants.barge));
 
-    NamedCommands.registerCommand("Coral Outtake", new ShootCoral(coral, 0.10));
+    NamedCommands.registerCommand("Coral Outtake", new IntakeCoral(coral, 0.10));
     NamedCommands.registerCommand("L4 Elevator", new elevPID(elevator, Constants.elevatorConstants.l4_height));
     NamedCommands.registerCommand("L3 Elevator", new elevPID(elevator, Constants.elevatorConstants.L3_height));
     NamedCommands.registerCommand("L2 Elevator", new elevPID(elevator, Constants.elevatorConstants.L2_height));

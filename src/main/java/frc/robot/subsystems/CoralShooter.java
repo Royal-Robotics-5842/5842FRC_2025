@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.ctre.phoenix6.hardware.CANrange;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -19,7 +20,7 @@ public class CoralShooter extends SubsystemBase {
   /** Creates a new CoralShooter. */
   public SparkMax rightMotor = new SparkMax(42, MotorType.kBrushless);
   public SparkMax leftMotor = new SparkMax(43, MotorType.kBrushless);
-  public Timer coralTimer = new Timer();
+  public CANrange rangeSensor =  new CANrange(0);
 
 
   public CoralShooter() 
@@ -40,11 +41,6 @@ public class CoralShooter extends SubsystemBase {
         rightConfig.smartCurrentLimit(40);
     rightMotor.configure(rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-  }
-
-  public double getTimeDifference()
-  {
-    return coralTimer.getFPGATimestamp();
   }
 
 
