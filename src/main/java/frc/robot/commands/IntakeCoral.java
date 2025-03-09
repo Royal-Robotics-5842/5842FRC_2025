@@ -28,7 +28,7 @@ public class IntakeCoral extends Command {
   @Override
   public void initialize() 
   {
-    
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -50,9 +50,13 @@ public class IntakeCoral extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (coral.rangeSensor.getDistance().getValue().in(Inch) < 1) {
+    if (coral.getDistance() < 1) 
+    {
       return true;
-    } else {
+    } 
+    
+    else 
+    {
       return false;
     }
   }

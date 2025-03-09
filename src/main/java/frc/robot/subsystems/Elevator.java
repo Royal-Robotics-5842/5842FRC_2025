@@ -26,7 +26,8 @@ public class Elevator extends SubsystemBase {
   public SparkMax rightMotor = new SparkMax(02, MotorType.kBrushless);
   public SparkClosedLoopController RightelevPID;
   public SparkClosedLoopController LeftelevPID;
-  public DigitalInput eleLimitSwitch;
+  public DigitalInput eleTopLimitSwitch;
+  public DigitalInput eleBottomLimitSwitch;
 
   public Elevator() 
   {
@@ -36,7 +37,7 @@ public class Elevator extends SubsystemBase {
             .idleMode(IdleMode.kBrake);
             //Set Current Limit
         leftConfig.smartCurrentLimit(40);
-        leftConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder);
+        leftConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder); // NEED TO CHANGE
         leftConfig.closedLoop.pid(0.085,0,0);
     leftMotor.configure(leftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     SparkMaxConfig rightConfig = new SparkMaxConfig();
@@ -46,30 +47,43 @@ public class Elevator extends SubsystemBase {
            //Set Current Limit
   rightConfig.smartCurrentLimit(40);
   rightConfig.follow(leftMotor, true);
-   rightMotor.configure(rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+  rightMotor.configure(rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-   LeftelevPID = leftMotor.getClosedLoopController();
+  LeftelevPID = leftMotor.getClosedLoopController();
 
-  eleLimitSwitch = new DigitalInput(1);  
+  eleTopLimitSwitch = new DigitalInput(1);  
+  eleBottomLimitSwitch = new DigitalInput(2);
 
   }
 
   public void moveElevator(double position)
   {
     LeftelevPID.setReference(position,ControlType.kPosition, ClosedLoopSlot.kSlot0);
-  
   }
 
-  public boolean getLimit()
+  public double getPosition()
   {
-    return eleLimitSwitch.get();
+    return leftMotor.getEncoder().getPosition();
   }
+
+  public boolean getTopLimit()
+  {
+    return eleTopLimitSwitch.get();
+  }
+
+  public boolean getBottomLimit()
+  {
+    return eleBottomLimitSwitch.get();
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putBoolean("EleLimit",eleLimitSwitch.get());
+    SmartDashboard.putBoolean("EleTopLimit", eleTopLimitSwitch.get());
+    SmartDashboard.putBoolean("EleBottomLimit", eleBottomLimitSwitch.get());
     SmartDashboard.putNumber("ElevatorRightEncoder", leftMotor.getEncoder().getPosition());
-    SmartDashboard.putNumber("elevator Power", leftMotor.getAppliedOutput());
+    SmartDashboard.putNumber("ElevatorAbsoluteEncoder", leftMotor.getAppliedOutput());
+    SmartDashboard.putNumber("Elevator Power", leftMotor.getAppliedOutput());
 
   }
 }

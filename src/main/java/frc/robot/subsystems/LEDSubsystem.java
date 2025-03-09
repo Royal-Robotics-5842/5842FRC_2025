@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class LEDSubsystem extends SubsystemBase {
   CANifier RGBLights = new CANifier(6);
+<<<<<<< HEAD
   int blink_count = 0;
   int blinkPerSecond = 0;
   double powerPercentage = 100;
@@ -30,6 +31,12 @@ public class LEDSubsystem extends SubsystemBase {
   int G = 0;
   int B = 0;
 
+=======
+  double R = 0;
+  double G = 0;
+  double B = 0;
+  boolean enabled = false;
+>>>>>>> 123cb0ad273e969c0a2a0fc342970af2c468e481
   /** Creates a new LEDSubsystem. */
   public LEDSubsystem() {
     setPowerPercentage(50);
@@ -94,6 +101,7 @@ public class LEDSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+<<<<<<< HEAD
     double duty_cycle =  (0.001 / 0.01) * powerPercentage; 
     RGBLights.enablePWMOutput(0, powered);
     RGBLights.setLEDOutput(G, LEDChannel.LEDChannelA);
@@ -106,5 +114,18 @@ public class LEDSubsystem extends SubsystemBase {
     }
 
     blink_count++;
+=======
+    setColor(100, 100, 100);
+    RGBLights.enablePWMOutput(0, enabled);
+    RGBLights.setLEDOutput(R, LEDChannel.LEDChannelA);
+    RGBLights.setLEDOutput(G, LEDChannel.LEDChannelB);
+    RGBLights.setLEDOutput(B, LEDChannel.LEDChannelC);
+  }
+
+  public void setColor(double R, double G, double B) {
+    this.R = R;
+    this.G = G;
+    this.B = B;
+>>>>>>> 123cb0ad273e969c0a2a0fc342970af2c468e481
   }
 }
