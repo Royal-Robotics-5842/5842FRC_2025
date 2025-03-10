@@ -82,7 +82,7 @@ public class Elevator extends SubsystemBase {
     SmartDashboard.putBoolean("EleTopLimit", eleTopLimitSwitch.get());
     SmartDashboard.putBoolean("EleBottomLimit", eleBottomLimitSwitch.get());
     SmartDashboard.putNumber("ElevatorRightEncoder", leftMotor.getEncoder().getPosition());
-    SmartDashboard.putNumber("ElevatorAbsoluteEncoder", leftMotor.getAppliedOutput());
+    SmartDashboard.putNumber("Elevator Current", leftMotor.getOutputCurrent());
     SmartDashboard.putNumber("Elevator Power", leftMotor.getAppliedOutput());
 
   }

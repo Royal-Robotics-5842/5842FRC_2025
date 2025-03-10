@@ -7,6 +7,7 @@ package frc.robot;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonCreator.Mode;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -19,13 +20,16 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.AutoConstants.Side;
 import frc.robot.commands.Positoning;
 import frc.robot.commands.ShootAlgae;
+import frc.robot.commands.ChangeLED;
 import frc.robot.commands.IntakeCoral;
 import frc.robot.commands.OuttakeCoral;
 import frc.robot.commands.SwerveDriveJoystick;
@@ -41,6 +45,7 @@ import frc.robot.subsystems.CoralShooter;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.subsystems.LEDSubsystem.Modes;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -89,9 +94,9 @@ public class RobotContainer {
       SmartDashboard.putNumber("Robot Pitch", swerveSubsystem.gyro.getPitch());
     
     configureBindings();
-    
-    
-    
+
+    LEDSubsystem.cutPowerBy(20);
+    LEDSubsystem.enable();
   }
 
   
@@ -143,8 +148,17 @@ public class RobotContainer {
       }, set));
 
 
-    m_driverController.povUp().toggleOnTrue(new elevPID(elevator, Constants.elevatorConstants.l4_height));
-    m_driverController.povLeft().toggleOnTrue(new elevPID(elevator, Constants.elevatorConstants.L3_height));
+    m_driverController.povUp().toggleOnTrue(new ParallelCommandGroup(
+      new armPID(arm, Constants.armConstants.stow),      
+      new elevPID(elevator, Constants.elevatorConstants.L4_height)
+    ));
+
+    m_driverController.povLeft().toggleOnTrue(
+      new ParallelCommandGroup(
+      new armPID(arm, Constants.armConstants.stow),      
+      new elevPID(elevator, Constants.elevatorConstants.L3_height)
+    ));
+
     m_driverController.povRight().toggleOnTrue(new elevPID(elevator, Constants.elevatorConstants.L2_height));
     m_driverController.povDown().toggleOnTrue(new elevPID(elevator, Constants.elevatorConstants.bottom_height));
 
@@ -157,7 +171,7 @@ public class RobotContainer {
   
     
   
-    m_driverController.leftBumper().whileTrue(new IntakeCoral(coral, -0.25));
+    m_driverController.leftBumper().onTrue(new IntakeCoral(coral, -0.25));
     m_driverController.rightBumper().whileTrue(new OuttakeCoral(coral, -1));
 
     operatorController.rightTrigger().onTrue((new resetEverything(swerveSubsystem)).withTimeout(0.1));
@@ -165,7 +179,7 @@ public class RobotContainer {
     operatorController.b().onTrue(new armPID(arm, Constants.armConstants.barge));
 
     NamedCommands.registerCommand("Coral Outtake", new IntakeCoral(coral, 0.10));
-    NamedCommands.registerCommand("L4 Elevator", new elevPID(elevator, Constants.elevatorConstants.l4_height));
+    NamedCommands.registerCommand("L4 Elevator", new elevPID(elevator, Constants.elevatorConstants.L4_height));
     NamedCommands.registerCommand("L3 Elevator", new elevPID(elevator, Constants.elevatorConstants.L3_height));
     NamedCommands.registerCommand("L2 Elevator", new elevPID(elevator, Constants.elevatorConstants.L2_height));
     NamedCommands.registerCommand("L1/Bottom Elevator", new elevPID(elevator, Constants.elevatorConstants.bottom_height));

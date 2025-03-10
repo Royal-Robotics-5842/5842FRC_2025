@@ -10,31 +10,32 @@ import com.ctre.phoenix.CANifier.LEDChannel;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class LEDSubsystem extends SubsystemBase {
-  CANifier RGBLights = new CANifier(6);
-  double R = 0;
-  double G = 0;
-  double B = 0;
-  int blink_count = 0;
-  int blinkPerSecond = 0;
-  double powerPercentage = 100;
-  boolean blinking = false;
-  boolean powered = false;
-  
-  public enum Modes {
+  static CANifier RGBLights = new CANifier(6);
+  static double R = 0;
+  static double G = 0;
+  static double B = 0;
+  static int blink_count = 0;
+  static int blinkDelay = 0;
+  static double powerDividend = 100;
+  static boolean blinking = false;
+  static boolean powered = false;
+
+  public static enum Modes {
     IDLE,
     CORAL_RUN,
     ALAGE_RUN,
     TELEOP,
     AUTO
   }
-  Modes currentMode = Modes.IDLE;
+
+  static Modes currentMode = Modes.IDLE;
+  public static Modes robotMode = Modes.IDLE;
+
   /** Creates a new LEDSubsystem. */
   public LEDSubsystem() {
-    setPowerPercentage(50);
-    enable();
   }
 
-  public void enable() {
+  public static void enable() {
     powered = true;
   }
 
@@ -42,80 +43,77 @@ public class LEDSubsystem extends SubsystemBase {
     powered = false;
   }
 
-  public void setMode(Modes mode) {
+  public static void setMode(Modes mode) {
     currentMode = mode;
 
     switch (mode) {
       case IDLE:
-        //Royal Purple
-        setColor(47,32,66);
+        // Royal Purple
+        setColor(1, 0, 1);
         setBlinking(false, 0);
         break;
       case CORAL_RUN:
-        //Royal Blue
-        setColor(65,105,225);
-        setBlinking(false, 0);
+        // Blue
+        setColor(0, 0, 1);
+        setBlinking(true, 8);
         break;
       case ALAGE_RUN:
-        //Royal Green
-        setColor(28,101,27);
-        setBlinking(false, 0);
+        // Green
+        setColor(0, 1, 0);
+        setBlinking(true, 8);
         break;
       case TELEOP:
-        //Royal Purple
-        setColor(47,32,66);
-        setBlinking(true, 5);
+        // Purple
+        setColor(1, 0, 1);
+        setBlinking(true, 20);
         break;
       case AUTO:
-        //Royal Orange
-        setColor(249,146,69);
-        setBlinking(true, 5);
+        // Orange
+        setColor(1, .1, 0);
+        setBlinking(true, 20);
         break;
-  
     }
   }
 
-  public void setPowerPercentage(double percentage) {
-    this.powerPercentage = percentage;
+  public static void cutPowerBy(double dividend) {
+    LEDSubsystem.powerDividend
+ = dividend;
   }
 
-  public void setBlinking(boolean blinking, int timesPerSecond) {
-    this.blinking = blinking;
-    this.blinkPerSecond = timesPerSecond;
+  public static void setBlinking(boolean newBlink, int blinkingDelay) {
+    blinking = newBlink;
+    blinkDelay = blinkingDelay;
+
+    if (blinking == false) {
+      enable();
+    }
   }
 
-  public void setColor(int R, int G, int B) {
-    this.R = R;
-    this.G = G;
-    this.B = B;
+  public static void setColor(double R2, double G2, double B2) {
+    R = R2;
+    G = G2;
+    B = B2;
   }
 
   @Override
   public void periodic() {
-    double duty_cycle =  (0.001 / 0.01) * powerPercentage; 
-    RGBLights.enablePWMOutput(0, powered);
-    RGBLights.setLEDOutput(G, LEDChannel.LEDChannelA);
-    RGBLights.setLEDOutput(R, LEDChannel.LEDChannelB);
-    RGBLights.setLEDOutput(B, LEDChannel.LEDChannelC);
-    RGBLights.setPWMOutput(0, 1000 / duty_cycle);
+    // double duty_cycle = (0.001 / 0.01) * powerDividend
+;
+    if (powered) {
+      RGBLights.setLEDOutput(G / powerDividend, LEDChannel.LEDChannelA);
+      RGBLights.setLEDOutput(R / powerDividend, LEDChannel.LEDChannelB);
+      RGBLights.setLEDOutput(B / powerDividend, LEDChannel.LEDChannelC);
+    } else {
+      RGBLights.setLEDOutput(0, LEDChannel.LEDChannelA);
+      RGBLights.setLEDOutput(0, LEDChannel.LEDChannelB);
+      RGBLights.setLEDOutput(0, LEDChannel.LEDChannelC);
+    }
 
-    if(blinking && blink_count >= blinkPerSecond) {
+    if (blinking && blink_count >= blinkDelay) {
       blink_count = 0;
+      powered = !powered;
     }
 
     blink_count++;
-
-    setColor(100, 100, 100);
-    RGBLights.enablePWMOutput(0, powered);
-    RGBLights.setLEDOutput(R, LEDChannel.LEDChannelA);
-    RGBLights.setLEDOutput(G, LEDChannel.LEDChannelB);
-    RGBLights.setLEDOutput(B, LEDChannel.LEDChannelC);
-  }
-
-  public void setColor(double R, double G, double B) {
-    this.R = R;
-    this.G = G;
-    this.B = B;
-
   }
 }

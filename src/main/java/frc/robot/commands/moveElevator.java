@@ -45,6 +45,8 @@ public class moveElevator extends Command {
     elevator.rightMotor.set(speed);
 
     System.out.println("ENCODER" + elevator.rightMotor.getEncoder().getPosition());
+
+    
   }
 
   // Called once the command ends or is interrupted.

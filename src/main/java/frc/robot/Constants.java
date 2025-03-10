@@ -117,15 +117,16 @@ public final class Constants {
     public static final double L1_height = 3;
     public static final double L2_height = 40;
     public static final double L3_height = 93;
-    public static final double l4_height = 175;
+    public static final double L4_height = 175;
     public static final double bottom_height = 1;
   }
 
   public static final class armConstants
   {
-    public static final double groundPickup = 0;
+    public static final double groundPickup = 32.8;
     public static final double processor = 0;
     public static final double barge = 0;
+    public static final double stow = 0;
     public static final double lowerReef = 0;
     public static final double higherReef = 0;
   }

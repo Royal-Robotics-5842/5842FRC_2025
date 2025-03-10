@@ -70,7 +70,7 @@ public class SwerveDriveJoystick extends Command {
     ChassisSpeeds chassisSpeeds;
         if (fieldOrientedFunction.get())
         {
-          if (elevator.getPosition() > Constants.elevatorConstants.l4_height/2)
+          if (elevator.getPosition() > Constants.elevatorConstants.L4_height/2)
           {
             chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
                     xSpeed/2, ySpeed/2, turningSpeed/2, swerveSubsystem.getRotation2d());

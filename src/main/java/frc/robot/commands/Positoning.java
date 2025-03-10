@@ -46,23 +46,26 @@ public class Positoning extends Command {
     if(swerve.allianceColor.toString() == "Red")
     {
       switch (((int)LimelightHelpers.getFiducialID("limelight-lite"))) {
+        case -1:
+          finalPose = swerve.lastPose;
+          break;
         case 6:
-          finalPose = new Pose2d(1,1,Rotation2d.fromDegrees(0.0));
+          finalPose = new Pose2d(13.025, 3.308, Rotation2d.fromDegrees(-60));
           break;
         case 7:
-          finalPose = new Pose2d(1,1,Rotation2d.fromDegrees(0.0));
+          finalPose = new Pose2d(13.462, 4.023, Rotation2d.fromDegrees(0));
           break;
         case 8:
-          finalPose = new Pose2d(1,1,Rotation2d.fromDegrees(0.0));
+          finalPose = new Pose2d(13.025, 4.746, Rotation2d.fromDegrees(60));
           break;
         case 9:
-          finalPose = new Pose2d(1,1,Rotation2d.fromDegrees(0.0));
+          finalPose = new Pose2d(12.209, 4.746, Rotation2d.fromDegrees(120));
           break;
         case 10:
-          finalPose = new Pose2d(1,1,Rotation2d.fromDegrees(0.0));
+          finalPose = new Pose2d(11.795, 4.023, Rotation2d.fromDegrees(-180));
           break;
         case 11:
-          finalPose = new Pose2d(1,1,Rotation2d.fromDegrees(0.0));
+          finalPose = new Pose2d(12.209, 3.308, Rotation2d.fromDegrees(-120));
           break;
       }
 
@@ -73,22 +76,22 @@ public class Positoning extends Command {
           finalPose = swerve.lastPose;
           break;
         case 17:
-          finalPose = new Pose2d(4.048, 3.251, Rotation2d.fromDegrees(60));
+          finalPose = new Pose2d(3.631, 3.308, Rotation2d.fromDegrees(60));
           break;
         case 18:
-          finalPose = new Pose2d(3.200,4.050,Rotation2d.fromDegrees(0));
+          finalPose = new Pose2d(3.226, 4.023, Rotation2d.fromDegrees(0));
           break;
         case 19:
-          finalPose = new Pose2d(4.1, 4.83, Rotation2d.fromDegrees(-60));
+          finalPose = new Pose2d(3.631, 4.746, Rotation2d.fromDegrees(-60));
           break;
         case 20:
-          finalPose = new Pose2d(5.07,4.8,Rotation2d.fromDegrees(-120));
+          finalPose = new Pose2d(4.466, 4.746, Rotation2d.fromDegrees(-120));
           break;
         case 21:
-          finalPose = new Pose2d(5.4,4.02,Rotation2d.fromDegrees(-180));
+          finalPose = new Pose2d(4.880, 4.023, Rotation2d.fromDegrees(-180)); 
           break;
         case 22:
-          finalPose = new Pose2d(4.967,3.241, Rotation2d.fromDegrees(120));
+          finalPose = new Pose2d(4.466, 3.308, Rotation2d.fromDegrees(60));
           break;
       }
     }

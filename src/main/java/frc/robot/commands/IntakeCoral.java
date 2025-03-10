@@ -10,6 +10,7 @@ import edu.wpi.first.units.DistanceUnit;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.CoralShooter;
+import frc.robot.subsystems.LEDSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class IntakeCoral extends Command {
@@ -37,6 +38,7 @@ public class IntakeCoral extends Command {
   {
     coral.leftMotor.set(speed);
     coral.rightMotor.set(speed);
+    LEDSubsystem.setMode(LEDSubsystem.Modes.CORAL_RUN);
   }
 
   // Called once the command ends or is interrupted.
@@ -45,12 +47,13 @@ public class IntakeCoral extends Command {
   {
     coral.leftMotor.set(0);
     coral.rightMotor.set(0);
+    LEDSubsystem.setMode(LEDSubsystem.robotMode);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (coral.getDistance() < 1) 
+    if (coral.getDistance() < 1.5) 
     {
       return true;
     } 

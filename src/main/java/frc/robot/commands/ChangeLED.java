@@ -5,21 +5,18 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.AlgaeShootSubsystem;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.LEDSubsystem.Modes;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class ShootAlgae extends Command {
-  private AlgaeShootSubsystem AlgaeShootSubsystem;
-  private double speed;
-
-  /** Creates a new MoveArm. */
-  public ShootAlgae(AlgaeShootSubsystem AlgaeShootSubsystem, double speed) {
-    this.AlgaeShootSubsystem = AlgaeShootSubsystem;
-    this.speed = speed;
-    addRequirements(AlgaeShootSubsystem);
-    // Use addRequirements() here to declare subsystem dependencies.
+public class ChangeLED extends Command {
+  /** Creates a new ChangeLED. */
+  Modes newMode;
+  LEDSubsystem ledSubsystem;
+  public ChangeLED(Modes mode,LEDSubsystem ledSubsystem) {
+    this.ledSubsystem = ledSubsystem;
+    this.newMode = mode;
+    addRequirements(ledSubsystem);
   }
 
   // Called when the command is initially scheduled.
@@ -28,25 +25,17 @@ public class ShootAlgae extends Command {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() 
-  {
-    AlgaeShootSubsystem.leftMotor.set(speed);
-    AlgaeShootSubsystem.rightMotor.set(speed);
-    LEDSubsystem.setMode(LEDSubsystem.Modes.ALAGE_RUN);
+  public void execute() {
+    LEDSubsystem.setMode(newMode);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) 
-  {
-    AlgaeShootSubsystem.leftMotor.set(0);
-    AlgaeShootSubsystem.rightMotor.set(0);
-    LEDSubsystem.setMode(LEDSubsystem.robotMode);
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return true;
   }
 }

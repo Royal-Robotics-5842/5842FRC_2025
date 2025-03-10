@@ -44,6 +44,10 @@ public class elevPID extends Command {
   public void execute() 
   {
     elevator.moveElevator(position);
+    if(elevator.getBottomLimit() == false)
+    {
+      elevator.leftMotor.getEncoder().setPosition(0);
+    }
   }
 
   // Called once the command ends or is interrupted.
@@ -57,12 +61,12 @@ public class elevPID extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if((elevator.getTopLimit() == false && elevator.rightMotor.getAppliedOutput() > 0))
+    if((elevator.getTopLimit() == false && elevator.leftMotor.getAppliedOutput() > 0))
     {
       return true;
     }
 
-    if((elevator.getBottomLimit() == false && elevator.rightMotor.getAppliedOutput() < 0))
+    if((elevator.getBottomLimit() == false && elevator.leftMotor.getAppliedOutput() < 0))
     {
       return true;
     }
