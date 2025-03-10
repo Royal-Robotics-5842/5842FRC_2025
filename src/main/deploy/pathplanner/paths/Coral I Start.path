@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.58,
-        "y": 7.07
+        "x": 7.5262179487179495,
+        "y": 6.027179487179487
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.265801515877917,
-        "y": 6.0242561157307755
+        "x": 6.009125957063106,
+        "y": 5.390494133154836
       },
       "isLocked": false,
       "linkedName": null
@@ -20,18 +20,44 @@
         "y": 5.073
       },
       "prevControl": {
-        "x": 6.487906932582318,
-        "y": 6.144988853435201
+        "x": 6.5171890897575135,
+        "y": 5.626718546203989
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "Coral I"
     }
   ],
-  "rotationTargets": [],
-  "constraintZones": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.9212962962962978,
+      "rotationDegrees": -119.99999999999999
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0.8120868744098219,
+      "maxWaypointRelativePos": 1.0,
+      "constraints": {
+        "maxVelocity": 0.5,
+        "maxAcceleration": 1.5,
+        "maxAngularVelocity": 180.0,
+        "maxAngularAcceleration": 90.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "L4 Elevator",
+      "waypointRelativePos": 0.8026440037771532,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 1.5,
     "maxAcceleration": 1.5,
@@ -45,7 +71,7 @@
     "rotation": -119.99999999999999
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Left Side Reef",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 180.0

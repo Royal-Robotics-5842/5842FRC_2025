@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.934679487179486,
-        "y": 6.77025641025641
+        "x": 3.0960530725776003,
+        "y": 5.776505977347944
       },
       "isLocked": false,
       "linkedName": "Coral K"
@@ -20,8 +20,8 @@
         "y": 6.98698717948718
       },
       "prevControl": {
-        "x": 0.7940456376881682,
-        "y": 7.181441481064207
+        "x": 0.9467074323340825,
+        "y": 7.1245982752712775
       },
       "nextControl": null,
       "isLocked": false,
@@ -45,7 +45,7 @@
     "rotation": -53.0
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Left Side Reef",
   "idealStartingState": {
     "velocity": 0,
     "rotation": -59.99999999999999

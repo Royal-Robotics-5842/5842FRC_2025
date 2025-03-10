@@ -171,18 +171,19 @@ public class RobotContainer {
   
     
   
-    m_driverController.leftBumper().onTrue(new IntakeCoral(coral, -0.25));
+    m_driverController.leftBumper().onTrue(new IntakeCoral(coral, -0.25).andThen(new OuttakeCoral(coral, 0.25).withTimeout(0.1)));
     m_driverController.rightBumper().whileTrue(new OuttakeCoral(coral, -1));
 
     operatorController.rightTrigger().onTrue((new resetEverything(swerveSubsystem)).withTimeout(0.1));
     operatorController.a().onTrue(new armPID(arm, Constants.armConstants.groundPickup));
     operatorController.b().onTrue(new armPID(arm, Constants.armConstants.barge));
 
-    NamedCommands.registerCommand("Coral Outtake", new IntakeCoral(coral, 0.10));
-    NamedCommands.registerCommand("L4 Elevator", new elevPID(elevator, Constants.elevatorConstants.L4_height));
-    NamedCommands.registerCommand("L3 Elevator", new elevPID(elevator, Constants.elevatorConstants.L3_height));
-    NamedCommands.registerCommand("L2 Elevator", new elevPID(elevator, Constants.elevatorConstants.L2_height));
-    NamedCommands.registerCommand("L1/Bottom Elevator", new elevPID(elevator, Constants.elevatorConstants.bottom_height));
+    NamedCommands.registerCommand("OutCoral", new OuttakeCoral(coral, 1).withTimeout(0.2));
+    NamedCommands.registerCommand("IntakeCoral", new IntakeCoral(coral, 1));
+    NamedCommands.registerCommand("L4Elevator", new elevPID(elevator, Constants.elevatorConstants.L4_height));
+    NamedCommands.registerCommand("L3Elevator", new elevPID(elevator, Constants.elevatorConstants.L3_height));
+    NamedCommands.registerCommand("L2Elevator", new elevPID(elevator, Constants.elevatorConstants.L2_height));
+    NamedCommands.registerCommand("Bottom Elevator", new elevPID(elevator, Constants.elevatorConstants.bottom_height));
   }
     
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
