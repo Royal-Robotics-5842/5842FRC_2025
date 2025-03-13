@@ -90,8 +90,7 @@ public class RobotContainer {
       elevator));
     
       SmartDashboard.putBoolean("Field Centric", !m_driverController.y().getAsBoolean());
-      SmartDashboard.putNumber("Robot Pitch", swerveSubsystem.gyro.getPitch());
-    
+      
     LEDSubsystem.cutPowerBy(20);
     LEDSubsystem.enable();
 
@@ -117,39 +116,10 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-/*
-    m_driverController.a().whileTrue(new SwerveDriveJoystickLimeLight(
-      swerveSubsystem,
-
-      () -> -driverJoytick.getRawAxis(OIConstants.kDriverYAxis), // Forward/Back DO NOT TOUCH
-      () -> -driverJoytick.getRawAxis(OIConstants.kDriverXAxis), // Left/Right
-      () -> !m_driverController.y().getAsBoolean()));
-*/
-/*
-    m_driverController.a().onTrue(Commands.defer(() -> {
-    return new Command() {
-      @Override
-      public void execute() {
-        swerveSubsystem.gotoPath(Side.left);
-      }
-    }; // Return an empty command after execution
-    }, set));
-*/
-    /*m_driverController.a().onTrue(Commands.defer(() -> {
-      return swerveSubsystem.gotoPath(Side.left); // Return an empty command after execution
-      }, set));*/
-
       
     m_driverController.leftTrigger().whileTrue(Commands.defer(() -> {
       return new Positoning(swerveSubsystem,Side.left); // Return an empty command after execution
       }, set));
-
-    //m_driverController.y().toggleOnTrue(new moveElevator(elevator, 0.05));
-    //m_driverController.x().toggleOnTrue(new moveElevator(elevator, -0.05));
-    //m_driverController.b().onTrue(Commands.defer(() -> {
-     // return swerveSubsystem.gotoPath(Side.right); // Return an empty command after execution
-     // }, set));
-
     m_driverController.rightTrigger().whileTrue(Commands.defer(() -> {
       return new Positoning(swerveSubsystem, Side.right); // Return an empty command after execution
       }, set));
@@ -159,26 +129,47 @@ public class RobotContainer {
       new armPID(arm, Constants.armConstants.stow),      
       new elevPID(elevator, Constants.elevatorConstants.L4_height)
     ));
-
     m_driverController.x().toggleOnTrue(
       new ParallelCommandGroup(
       new armPID(arm, Constants.armConstants.stow),      
       new elevPID(elevator, Constants.elevatorConstants.L3_height)
     ));
-
     m_driverController.b().toggleOnTrue(new elevPID(elevator, Constants.elevatorConstants.L2_height));
-    m_driverController.a().toggleOnTrue(new elevPID(elevator, Constants.elevatorConstants.bottom_height));
+    m_driverController.a().toggleOnTrue(new ParallelCommandGroup(
+      new armPID(arm, Constants.armConstants.stow),      
+      new elevPID(elevator, Constants.elevatorConstants.bottom_height)));
+
     m_driverController.leftBumper().toggleOnTrue(new IntakeCoral(coral, -0.1));//.andThen(new OuttakeCoral(coral, 0.25).withTimeout(0.1)));
     m_driverController.rightBumper().toggleOnTrue(new OuttakeCoral(coral, -0.5));
+ 
 
+    //------------OPERATOR------------
+    operatorController.leftTrigger().whileTrue(new ShootAlgae(algae, 1));
+    operatorController.rightTrigger().whileTrue(new ShootAlgae(algae, -1));
     
-    
-    operatorController.leftBumper().whileTrue(new ShootAlgae( algae, 1));
-    operatorController.rightBumper().whileTrue(new ShootAlgae( algae, -1));
-
-    operatorController.rightTrigger().onTrue((new resetEverything(swerveSubsystem)).withTimeout(0.1));
+    operatorController.leftStick().onTrue((new resetEverything(swerveSubsystem)).withTimeout(0.1));
+    //operatorController.rightTrigger().onTrue((new resetEverything(swerveSubsystem)).withTimeout(0.1));
     operatorController.a().onTrue(new armPID(arm, Constants.armConstants.groundPickup));
-    operatorController.b().onTrue(new armPID(arm, Constants.armConstants.barge));
+    operatorController.y().onTrue(new armPID(arm, Constants.armConstants.stow));
+
+    operatorController.x().whileTrue(new moveElevator(elevator, 0.1));
+    operatorController.b().whileTrue(new moveElevator(elevator, -0.1));
+
+    operatorController.leftBumper().toggleOnTrue(
+      new ParallelCommandGroup(
+      new armPID(arm, Constants.armConstants.barge),      
+      new elevPID(elevator, Constants.elevatorConstants.barge)
+    ));
+    operatorController.povUp().toggleOnTrue(
+      new ParallelCommandGroup(
+      new armPID(arm, Constants.armConstants.topReef),      
+      new elevPID(elevator, Constants.elevatorConstants.topReef)
+    ));
+    operatorController.povDown().toggleOnTrue(
+      new ParallelCommandGroup(
+      new armPID(arm, Constants.armConstants.bottomReef),      
+      new elevPID(elevator, Constants.elevatorConstants.bottomReef)
+    ));
   }
     
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`

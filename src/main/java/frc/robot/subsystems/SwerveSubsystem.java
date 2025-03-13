@@ -92,14 +92,8 @@ public class SwerveSubsystem extends SubsystemBase {
   public final PIDController turningPID = new PIDController(0.012, 0, 0);
 
   public SwerveSubsystem() { 
-    try{
-      config = RobotConfig.fromGUISettings();
-    } catch (Exception e) {
-      // Handle exception as needed
-      e.printStackTrace();
-    }
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
-    gyro.reset();
+    //gyro.reset();
     new Thread(() -> {
         try {
             Thread.sleep(1000);
@@ -108,6 +102,12 @@ public class SwerveSubsystem extends SubsystemBase {
         }
     }).start();
 
+    try{
+      config = RobotConfig.fromGUISettings();
+    } catch (Exception e) {
+      // Handle exception as needed
+      e.printStackTrace();
+    }
     //Register swerve auto
     AutoBuilder.configure(
       this::getLimelightPose2d,
@@ -238,7 +238,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
   public void resetSwervePoseEstimator(Pose2d pose)
   {
-    SwerveDrivePoseEstimator.resetPosition(getRotation2d(), new SwerveModulePosition[] {
+    SwerveDrivePoseEstimator.resetPosition(gyro.getRotation2d(), new SwerveModulePosition[] {
       frontLeft.getPosition(),
       frontRight.getPosition(),
       backLeft.getPosition(),
@@ -283,7 +283,8 @@ public class SwerveSubsystem extends SubsystemBase {
     backLeft.getPosition(),
     backRight.getPosition()});
       
-    allianceColor = DriverStation.Alliance.Blue;
+    allianceColor = DriverStation.getAlliance().get();
+
     
     SmartDashboard.putData(m_field);
     SmartDashboard.putString("Robot Location (ODEMETER)", getPose().toString());
@@ -308,6 +309,10 @@ public class SwerveSubsystem extends SubsystemBase {
       if(mt2.tagCount == 0)
       {
         doRejectUpdate = true;
+      }
+      if (mt2.avgTagDist < 0.5)
+      {
+        doRejectUpdate =true;
       }
       if(!doRejectUpdate)
       {
