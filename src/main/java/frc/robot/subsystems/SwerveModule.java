@@ -53,7 +53,7 @@ public class SwerveModule {
             .inverted(driveMotorReversed)
             .idleMode(IdleMode.kCoast);
             //Set Current Limit
-        driveConfig.smartCurrentLimit(40);
+        driveConfig.smartCurrentLimit(60);
             //Converting the encoder values from "rotations" to meters
         driveConfig.encoder.positionConversionFactor(ModuleConstants.kDriveEncoderRot2Meter);
         driveConfig.encoder.velocityConversionFactor(ModuleConstants.kDriveEncoderRPM2MeterPerSec);
@@ -63,7 +63,7 @@ public class SwerveModule {
         SparkMaxConfig turnConfig = new SparkMaxConfig();
         turnConfig.inverted(turningMotorReversed); 
         turnConfig.idleMode(IdleMode.kCoast);
-        turnConfig.smartCurrentLimit(40);
+        turnConfig.smartCurrentLimit(60);
         turningMotor.configure(turnConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
 //-----------------------------------------------------------------------

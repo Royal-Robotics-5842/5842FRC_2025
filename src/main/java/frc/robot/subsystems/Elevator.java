@@ -38,7 +38,7 @@ public class Elevator extends SubsystemBase {
             //Set Current Limit
         leftConfig.smartCurrentLimit(40);
         leftConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder); // NEED TO CHANGE
-        leftConfig.closedLoop.pid(0.085,0,0);
+        leftConfig.closedLoop.pid(0.08,0,0);
     leftMotor.configure(leftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     SparkMaxConfig rightConfig = new SparkMaxConfig();
     rightConfig

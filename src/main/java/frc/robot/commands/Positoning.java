@@ -50,22 +50,22 @@ public class Positoning extends Command {
           finalPose = swerve.lastPose;
           break;
         case 6:
-          finalPose = new Pose2d(13.025, 3.308, Rotation2d.fromDegrees(-60));
+          finalPose = new Pose2d(13.696, 2.900, Rotation2d.fromDegrees(-60));
           break;
         case 7:
-          finalPose = new Pose2d(13.462, 4.023, Rotation2d.fromDegrees(0));
+          finalPose = new Pose2d(14.368, 4.023, Rotation2d.fromDegrees(0));
           break;
         case 8:
-          finalPose = new Pose2d(13.025, 4.746, Rotation2d.fromDegrees(60));
+          finalPose = new Pose2d(13.736, 5.152, Rotation2d.fromDegrees(60));
           break;
         case 9:
-          finalPose = new Pose2d(12.209, 4.746, Rotation2d.fromDegrees(120));
+          finalPose = new Pose2d(12.411, 5.171, Rotation2d.fromDegrees(120));
           break;
         case 10:
           finalPose = new Pose2d(11.795, 4.023, Rotation2d.fromDegrees(-180));
           break;
         case 11:
-          finalPose = new Pose2d(12.209, 3.308, Rotation2d.fromDegrees(-120));
+          finalPose = new Pose2d(12.421, 2.900, Rotation2d.fromDegrees(-120));
           break;
       }
 
@@ -76,22 +76,22 @@ public class Positoning extends Command {
           finalPose = swerve.lastPose;
           break;
         case 17:
-          finalPose = new Pose2d(3.631, 3.308, Rotation2d.fromDegrees(60));
+          finalPose = new Pose2d(3.834, 2.898, Rotation2d.fromDegrees(60));
           break;
         case 18:
-          finalPose = new Pose2d(3.226, 4.023, Rotation2d.fromDegrees(0));
+          finalPose = new Pose2d(3.206, 4.023, Rotation2d.fromDegrees(0));
           break;
         case 19:
-          finalPose = new Pose2d(3.631, 4.746, Rotation2d.fromDegrees(-60));
+          finalPose = new Pose2d(3.844, 5.161, Rotation2d.fromDegrees(-60));
           break;
         case 20:
-          finalPose = new Pose2d(4.466, 4.746, Rotation2d.fromDegrees(-120));
+          finalPose = new Pose2d(5.148, 5.161, Rotation2d.fromDegrees(-120));
           break;
         case 21:
-          finalPose = new Pose2d(4.880, 4.023, Rotation2d.fromDegrees(-180)); 
+          finalPose = new Pose2d(5.810, 4.023, Rotation2d.fromDegrees(-180)); 
           break;
         case 22:
-          finalPose = new Pose2d(4.466, 3.308, Rotation2d.fromDegrees(60));
+          finalPose = new Pose2d(5.148, 2.908, Rotation2d.fromDegrees(120));
           break;
       }
     }
@@ -137,7 +137,7 @@ public class Positoning extends Command {
     speeds = swerve.holonomicController.calculate(swerve.getLimelightPose2d(), 
     offsetPosition, 0, offsetPosition.getRotation());
     
-    swerve.setModuleStates(Constants.DriveConstants.kDriveKinematics.toSwerveModuleStates(speeds.times(0.5)));
+    swerve.setModuleStates(Constants.DriveConstants.kDriveKinematics.toSwerveModuleStates(speeds));
 
     System.out.println("FINAL POSE" + finalPose.toString());
     System.out.println("Offeset 1" + offsetPosition.toString());

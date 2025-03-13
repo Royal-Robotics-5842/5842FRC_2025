@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.subsystems.Elevator;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
@@ -44,10 +45,7 @@ public class elevPID extends Command {
   public void execute() 
   {
     elevator.moveElevator(position);
-    if(elevator.getBottomLimit() == false)
-    {
-      elevator.leftMotor.getEncoder().setPosition(0);
-    }
+    
   }
 
   // Called once the command ends or is interrupted.
@@ -56,17 +54,24 @@ public class elevPID extends Command {
   {
     elevator.leftMotor.set(0);
     elevator.rightMotor.set(0);
+
+    if(elevator.getBottomLimit() == false)
+    {
+      elevator.leftMotor.getEncoder().setPosition(0);
+    }
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if((elevator.getTopLimit() == false && elevator.leftMotor.getAppliedOutput() > 0))
+    if(((elevator.getTopLimit() == false && elevator.leftMotor.getAppliedOutput() > 0)) || 
+    (Math.abs(elevator.getPosition() - position) <= 1)||
+    (elevator.leftMotor.getOutputCurrent() > 100))
     {
       return true;
     }
 
-    if((elevator.getBottomLimit() == false && elevator.leftMotor.getAppliedOutput() < 0))
+    if((elevator.getBottomLimit() == false && elevator.leftMotor.getAppliedOutput() < 0) || (Math.abs(elevator.getPosition() - position) <= 1))
     {
       return true;
     }

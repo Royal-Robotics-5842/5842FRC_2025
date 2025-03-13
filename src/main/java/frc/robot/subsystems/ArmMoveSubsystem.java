@@ -28,7 +28,7 @@ public class ArmMoveSubsystem extends SubsystemBase {
     .06,
     0,
     0,
-    new TrapezoidProfile.Constraints(20, 20));
+    new TrapezoidProfile.Constraints(30, 30));
   /*
   * Creates a new ArmMoveSubsystem. */
 

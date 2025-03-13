@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.5626615996957933,
-        "y": 6.088346003966813
+        "x": 1.6426070924619036,
+        "y": 6.628942381352058
       },
       "isLocked": false,
       "linkedName": "Human Player 1"
@@ -20,8 +20,8 @@
         "y": 5.240885416666666
       },
       "prevControl": {
-        "x": 3.3705400822066087,
-        "y": 5.580121994698729
+        "x": 4.077283209514264,
+        "y": 5.458024397339169
       },
       "nextControl": null,
       "isLocked": false,
@@ -29,33 +29,12 @@
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [
-    {
-      "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.7478753541076523,
-      "maxWaypointRelativePos": 1.0,
-      "constraints": {
-        "maxVelocity": 0.5,
-        "maxAcceleration": 0.5,
-        "maxAngularVelocity": 180.0,
-        "maxAngularAcceleration": 90.0,
-        "nominalVoltage": 12.0,
-        "unlimited": false
-      }
-    }
-  ],
+  "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [
-    {
-      "name": "L4 Elevator",
-      "waypointRelativePos": 0.7610953729933934,
-      "endWaypointRelativePos": null,
-      "command": null
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 1.5,
-    "maxAcceleration": 1.5,
+    "maxVelocity": 2.0,
+    "maxAcceleration": 2.0,
     "maxAngularVelocity": 180.0,
     "maxAngularAcceleration": 90.0,
     "nominalVoltage": 12.0,

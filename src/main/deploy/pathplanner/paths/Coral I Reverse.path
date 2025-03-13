@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.244375569573553,
-        "y": 6.034676329707526
+        "x": 4.626213009391795,
+        "y": 5.56681760702722
       },
       "isLocked": false,
       "linkedName": "Coral I"
@@ -20,8 +20,8 @@
         "y": 6.98698717948718
       },
       "prevControl": {
-        "x": 0.8516028559800772,
-        "y": 6.938894046725598
+        "x": 0.9271004964499643,
+        "y": 7.050940491003827
       },
       "nextControl": null,
       "isLocked": false,
@@ -29,26 +29,12 @@
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [
-    {
-      "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.0,
-      "maxWaypointRelativePos": 0.14730878186968796,
-      "constraints": {
-        "maxVelocity": 0.5,
-        "maxAcceleration": 0.5,
-        "maxAngularVelocity": 180.0,
-        "maxAngularAcceleration": 90.0,
-        "nominalVoltage": 12.0,
-        "unlimited": false
-      }
-    }
-  ],
+  "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 1.5,
-    "maxAcceleration": 1.5,
+    "maxVelocity": 2.0,
+    "maxAcceleration": 2.0,
     "maxAngularVelocity": 180.0,
     "maxAngularAcceleration": 90.0,
     "nominalVoltage": 12.0,

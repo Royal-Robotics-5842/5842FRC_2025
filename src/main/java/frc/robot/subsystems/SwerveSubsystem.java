@@ -79,12 +79,12 @@ public class SwerveSubsystem extends SubsystemBase {
   ChassisSpeeds speeds;
   Pose2d finalPose = new Pose2d();
 
-  public ProfiledPIDController thetaController = new ProfiledPIDController(Constants.AutoConstants.kPThetaController, 0, 0,
+  public ProfiledPIDController thetaController = new ProfiledPIDController(2, 0, 0,
     new TrapezoidProfile.Constraints(6.28, 3.14));
     
   public HolonomicDriveController holonomicController = new HolonomicDriveController(
-    new PIDController(Constants.AutoConstants.kPXController, 0, 0), 
-    new PIDController(Constants.AutoConstants.kPXController, 0, 0),
+    new PIDController(1, 0, 0), 
+    new PIDController(1, 0, 0),
       thetaController);
     
   //Old way of constructing //public final AHRS gyro = new AHRS(SPI.Port.kMXP); //Defineing the Gyro
@@ -92,7 +92,13 @@ public class SwerveSubsystem extends SubsystemBase {
   public final PIDController turningPID = new PIDController(0.012, 0, 0);
 
   public SwerveSubsystem() { 
-    thetaController.enableContinuousInput(-180, 180);
+    try{
+      config = RobotConfig.fromGUISettings();
+    } catch (Exception e) {
+      // Handle exception as needed
+      e.printStackTrace();
+    }
+    thetaController.enableContinuousInput(-Math.PI, Math.PI);
     gyro.reset();
     new Thread(() -> {
         try {
@@ -102,17 +108,10 @@ public class SwerveSubsystem extends SubsystemBase {
         }
     }).start();
 
-    try{
-      config = RobotConfig.fromGUISettings();
-    } catch (Exception e) {
-      // Handle exception as needed
-      e.printStackTrace();
-    }
-
     //Register swerve auto
     AutoBuilder.configure(
       this::getLimelightPose2d,
-      this::resetOdometry,
+      this::resetSwervePoseEstimator,
       this::getRobotRelativeSpeeds,   
       (speeds, feedforwards) -> driveRobotRelative(speeds),
       new PPHolonomicDriveController(
@@ -229,6 +228,17 @@ public class SwerveSubsystem extends SubsystemBase {
   public void resetOdometry(Pose2d pose) 
   {
     odometer.resetPosition(getRotation2d(), new SwerveModulePosition[] {
+      frontLeft.getPosition(),
+      frontRight.getPosition(),
+      backLeft.getPosition(),
+      backRight.getPosition()
+     } 
+     ,pose);
+  }
+
+  public void resetSwervePoseEstimator(Pose2d pose)
+  {
+    SwerveDrivePoseEstimator.resetPosition(getRotation2d(), new SwerveModulePosition[] {
       frontLeft.getPosition(),
       frontRight.getPosition(),
       backLeft.getPosition(),

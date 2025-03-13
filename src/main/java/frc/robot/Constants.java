@@ -22,7 +22,7 @@ import edu.wpi.first.math.util.Units;
 public final class Constants {
   public static final class ModuleConstants
   {
-    public static final double kWheelDiameterMeters = Units.inchesToMeters(4);
+    public static final double kWheelDiameterMeters = Units.inchesToMeters(3.74);
     public static final double kDriveMotorGearRatio = 1/6.75;
     public static final double kTurinigMotorGearRatio = 1/(150/7);
     public static final double kDriveEncoderRot2Meter = kDriveMotorGearRatio*Math.PI*kWheelDiameterMeters;
@@ -44,7 +44,7 @@ public final class Constants {
                 new Translation2d(-kWheelBase / 2, -kTrackWidth / 2)); //BR
 
 
-    public static final double kPhysicalMaxSpeedMetersPerSecond = 3.5;
+    public static final double kPhysicalMaxSpeedMetersPerSecond = 4.60248; //https://www.swervedrivespecialties.com/products/mk4-swerve-module
     public static final double kPhysicalMaxAngularSpeedRadiansPerSecond = 2 * 2 * Math.PI;
      
 
@@ -76,27 +76,19 @@ public final class Constants {
       public static final double kTeleDriveMaxAccelerationUnitsPerSecond = 3.5;
       public static final double kTeleDriveMaxAngularAccelerationUnitsPerSecond = 3.5;
       
-      public static final double kTeleDriveMaxSpeedMetersPerSecond = kPhysicalMaxSpeedMetersPerSecond / 2.5;
+      public static final double kTeleDriveMaxSpeedMetersPerSecond = kPhysicalMaxSpeedMetersPerSecond / 2;
       public static final double kTeleDriveMaxAngularSpeedRadiansPerSecond = kPhysicalMaxAngularSpeedRadiansPerSecond / 4;
 
   }
 
   public static final class AutoConstants {
-    public static final double kMaxSpeedMetersPerSecond = DriveConstants.kPhysicalMaxSpeedMetersPerSecond / 2;
-    public static final double kMaxAngularSpeedRadiansPerSecond = //
+       public static final double kMaxAngularSpeedRadiansPerSecond = //
             DriveConstants.kPhysicalMaxAngularSpeedRadiansPerSecond / 10;
-    public static final double kMaxAccelerationMetersPerSecondSquared = 1.5;
     public static final double kMaxAngularAccelerationRadiansPerSecondSquared = Math.PI / 4;
     public static final double kPXController = 2;//0.0776699309;
     public static final double kPThetaController = 6;
 
-    public static final PathConstraints pathPlanningConstraints = new PathConstraints(
-      kMaxSpeedMetersPerSecond,
-       kMaxAccelerationMetersPerSecondSquared,
-        kMaxAngularSpeedRadiansPerSecond,
-         kMaxAngularAccelerationRadiansPerSecondSquared
-         );
-
+ 
     public static final double reef_offset_x = 0;
     public static final double reef_offset_left = 0.19;
     public static final double reef_distance_offset = 0;
@@ -115,10 +107,11 @@ public final class Constants {
   public static final class elevatorConstants
   {
     public static final double L1_height = 3;
-    public static final double L2_height = 40;
-    public static final double L3_height = 93;
-    public static final double L4_height = 175;
-    public static final double bottom_height = 1;
+    public static final double L2_height = 31.4;
+    public static final double L3_height = 71;
+    public static final double L4_height = 133;
+;
+    public static final double bottom_height = 0.2;
   }
 
   public static final class armConstants

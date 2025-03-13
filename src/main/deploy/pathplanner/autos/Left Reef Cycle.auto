@@ -5,9 +5,22 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "Coral I Start"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Coral I Start"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "L4 Elevator"
+                }
+              }
+            ]
           }
         },
         {
@@ -42,9 +55,22 @@
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "Coral K"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Coral K"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "L4 Elevator"
+                }
+              }
+            ]
           }
         },
         {
