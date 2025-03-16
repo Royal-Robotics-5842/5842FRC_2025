@@ -52,9 +52,7 @@ public class elevPID extends Command {
   @Override
   public void end(boolean interrupted) 
   {
-    elevator.leftMotor.set(0);
-    elevator.rightMotor.set(0);
-
+    elevator.moveElevator(position);
     if(elevator.getBottomLimit() == false)
     {
       elevator.leftMotor.getEncoder().setPosition(0);
@@ -71,7 +69,7 @@ public class elevPID extends Command {
       return true;
     }
 
-    if((elevator.getBottomLimit() == false && elevator.leftMotor.getAppliedOutput() < 0) || (Math.abs(elevator.getPosition() - position) <= 1))
+    if((elevator.getBottomLimit() == false && elevator.leftMotor.getAppliedOutput() < 0) || (Math.abs(elevator.getPosition() - position) <= 0.5))
     {
       return true;
     }

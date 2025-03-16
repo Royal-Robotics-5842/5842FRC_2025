@@ -90,7 +90,8 @@ public final class Constants {
 
  
     public static final double reef_offset_x = 0;
-    public static final double reef_offset_left = 0.19;
+    public static final double reef_offset_left = 0.163;
+    public static final double reef_offset_right = 0.163+0.0762;
     public static final double reef_distance_offset = 0;
     public enum Side {
       left,
@@ -109,23 +110,21 @@ public final class Constants {
     public static final double L1_height = 3;
     public static final double L2_height = 31.4;
     public static final double L3_height = 71;
-    public static final double L4_height = 133;
+    public static final double L4_height = 138;
     
     public static final double barge = 1;
-    public static final double bottom_height = 0.2;
+    public static final double bottom_height = -0.2;
 
-    public static final double topReef = 1;
-    public static final double bottomReef = 1;
+    public static final double topReef = 100;
+    public static final double bottomReef = 52;
   }
 
   public static final class armConstants
   {
     public static final double groundPickup = 32.8;
-    public static final double processor = 0;
+    public static final double processor = 26;
     public static final double barge = 5;
     public static final double stow = 0;
-    public static final double bottomReef = 0;
-    public static final double topReef = 0;
   }
 
   public static final class OIConstants

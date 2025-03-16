@@ -17,7 +17,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "L4 Elevator"
+                  "name": "L3 Elevator"
                 }
               }
             ]
@@ -26,7 +26,19 @@
         {
           "type": "named",
           "data": {
+            "name": "L4 Elevator"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "OutCoral"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.25
           }
         },
         {
@@ -55,22 +67,15 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Coral K"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "L4 Elevator"
-                }
-              }
-            ]
+            "pathName": "Coral K"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "L4 Elevator"
           }
         },
         {

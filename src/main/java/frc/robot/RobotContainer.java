@@ -13,8 +13,10 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathPlannerPath;
 
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -83,8 +85,8 @@ public class RobotContainer {
 
     swerveSubsystem.setDefaultCommand(new SwerveDriveJoystick(
       swerveSubsystem,
-      () -> -driverJoytick.getRawAxis(OIConstants.kDriverYAxis), // Forward/Back DO NOT TOUCH
-      () -> -driverJoytick.getRawAxis(OIConstants.kDriverXAxis), // Left/Right
+      () -> driverJoytick.getRawAxis(OIConstants.kDriverYAxis), // Forward/Back DO NOT TOUCH
+      () -> driverJoytick.getRawAxis(OIConstants.kDriverXAxis), // Left/Right
       () -> -driverJoytick.getRawAxis(OIConstants.kDriverRotAxis),
       () -> !m_driverController.y().getAsBoolean(),
       elevator));
@@ -94,12 +96,16 @@ public class RobotContainer {
     LEDSubsystem.cutPowerBy(20);
     LEDSubsystem.enable();
 
-    NamedCommands.registerCommand("OutCoral", new OuttakeCoral(coral, -0.5));
-    NamedCommands.registerCommand("IntakeCoral", new IntakeCoral(coral, -0.1));
+    NamedCommands.registerCommand("OutCoral", new OuttakeCoral(coral, -0.1));
+
+    NamedCommands.registerCommand("IntakeCoral", (new IntakeCoral(coral, -0.1).unless(
+    () -> coral.getDistance() < 1.5)));
+
+
     NamedCommands.registerCommand("L4 Elevator", new elevPID(elevator, Constants.elevatorConstants.L4_height));
     NamedCommands.registerCommand("L3 Elevator", new elevPID(elevator, Constants.elevatorConstants.L3_height));
     NamedCommands.registerCommand("L2 Elevator", new elevPID(elevator, Constants.elevatorConstants.L2_height));
-    NamedCommands.registerCommand("BottomElevator", new elevPID(elevator, Constants.elevatorConstants.bottom_height));
+    NamedCommands.registerCommand("BottomElevator", new elevPID(elevator, Constants.elevatorConstants.bottom_height).withTimeout(2.25));
   
     autoChooser = AutoBuilder.buildAutoChooser("Testing");
     SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -127,20 +133,24 @@ public class RobotContainer {
 
     m_driverController.y().toggleOnTrue(new ParallelCommandGroup(
       new armPID(arm, Constants.armConstants.stow),      
-      new elevPID(elevator, Constants.elevatorConstants.L4_height)
-    ));
+      new elevPID(elevator, Constants.elevatorConstants.L4_height).unless
+      (() -> coral.getDistance() > 1.5)));
+
     m_driverController.x().toggleOnTrue(
       new ParallelCommandGroup(
       new armPID(arm, Constants.armConstants.stow),      
-      new elevPID(elevator, Constants.elevatorConstants.L3_height)
-    ));
-    m_driverController.b().toggleOnTrue(new elevPID(elevator, Constants.elevatorConstants.L2_height));
+      new elevPID(elevator, Constants.elevatorConstants.L3_height).unless
+      (() -> coral.getDistance() > 1.5)));
+
+    m_driverController.b().toggleOnTrue(new elevPID(elevator, Constants.elevatorConstants.L2_height).unless
+      (() -> coral.getDistance() > 1.5));
+
     m_driverController.a().toggleOnTrue(new ParallelCommandGroup(
       new armPID(arm, Constants.armConstants.stow),      
       new elevPID(elevator, Constants.elevatorConstants.bottom_height)));
 
     m_driverController.leftBumper().toggleOnTrue(new IntakeCoral(coral, -0.1));//.andThen(new OuttakeCoral(coral, 0.25).withTimeout(0.1)));
-    m_driverController.rightBumper().toggleOnTrue(new OuttakeCoral(coral, -0.5));
+    m_driverController.rightBumper().toggleOnTrue(new OuttakeCoral(coral, -0.15));
  
 
     //------------OPERATOR------------
@@ -152,24 +162,26 @@ public class RobotContainer {
     operatorController.a().onTrue(new armPID(arm, Constants.armConstants.groundPickup));
     operatorController.y().onTrue(new armPID(arm, Constants.armConstants.stow));
 
-    operatorController.x().whileTrue(new moveElevator(elevator, 0.1));
-    operatorController.b().whileTrue(new moveElevator(elevator, -0.1));
+    //operatorController.x().onTrue(new armPID(arm, 28));
+    operatorController.x().whileTrue(new moveElevator(elevator, 0.15));
+    operatorController.b().whileTrue(new moveElevator(elevator, -0.15));
 
     operatorController.leftBumper().toggleOnTrue(
       new ParallelCommandGroup(
-      new armPID(arm, Constants.armConstants.barge),      
-      new elevPID(elevator, Constants.elevatorConstants.barge)
-    ));
+      new armPID(arm, Constants.armConstants.processor)));
+
     operatorController.povUp().toggleOnTrue(
       new ParallelCommandGroup(
-      new armPID(arm, Constants.armConstants.topReef),      
+      new armPID(arm, Constants.armConstants.processor),      
       new elevPID(elevator, Constants.elevatorConstants.topReef)
     ));
     operatorController.povDown().toggleOnTrue(
       new ParallelCommandGroup(
-      new armPID(arm, Constants.armConstants.bottomReef),      
+      new armPID(arm, Constants.armConstants.processor),      
       new elevPID(elevator, Constants.elevatorConstants.bottomReef)
-    ));
+    ));    
+
+    
   }
     
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`

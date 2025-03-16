@@ -72,8 +72,8 @@ public class SwerveSubsystem extends SubsystemBase {
             DriveConstants.kBackRightTurningMotorReversed,
             DriveConstants.kBackRightTurnAbsoluteEncoderPort);
     
-  public Pose2d lastPose;  
-  public DriverStation.Alliance allianceColor;
+  public Pose2d lastPose = new Pose2d(0,0, new Rotation2d(0));  
+  public DriverStation.Alliance allianceColor = DriverStation.getAlliance().get() ;
   public final Field2d m_field = new Field2d(); //For Glass
   RobotConfig config;
   ChassisSpeeds speeds;
@@ -83,13 +83,14 @@ public class SwerveSubsystem extends SubsystemBase {
     new TrapezoidProfile.Constraints(6.28, 3.14));
     
   public HolonomicDriveController holonomicController = new HolonomicDriveController(
-    new PIDController(1, 0, 0), 
-    new PIDController(1, 0, 0),
+    new PIDController(1.3, 0, 0), 
+    new PIDController(1.3, 0, 0),
       thetaController);
     
   //Old way of constructing //public final AHRS gyro = new AHRS(SPI.Port.kMXP); //Defineing the Gyro
   public final AHRS gyro = new AHRS(NavXComType.kMXP_SPI);
   public final PIDController turningPID = new PIDController(0.012, 0, 0);
+  private ChassisSpeeds chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
 
   public SwerveSubsystem() { 
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
@@ -128,7 +129,7 @@ public class SwerveSubsystem extends SubsystemBase {
         if (alliance.isPresent()) {
           return alliance.get() == DriverStation.Alliance.Red;
         }
-        return false;
+        return false; 
         }, this
       
     );
@@ -151,7 +152,7 @@ public class SwerveSubsystem extends SubsystemBase {
     
     //THIS IS JUST FOR TRAJECTORIES
   private final SwerveDriveOdometry odometer = new SwerveDriveOdometry(DriveConstants.kDriveKinematics,
-    new Rotation2d(0),  new SwerveModulePosition[] {
+    new Rotation2d(),  new SwerveModulePosition[] {
       frontLeft.getPosition(),
       frontRight.getPosition(),
       backLeft.getPosition(),
@@ -159,7 +160,7 @@ public class SwerveSubsystem extends SubsystemBase {
     });
 
   public SwerveDrivePoseEstimator SwerveDrivePoseEstimator = new SwerveDrivePoseEstimator
-    (Constants.DriveConstants.kDriveKinematics, getRotation2d(), new SwerveModulePosition[] 
+    (Constants.DriveConstants.kDriveKinematics, new Rotation2d(), new SwerveModulePosition[] 
     {
       frontLeft.getPosition(),
       frontRight.getPosition(),
@@ -195,7 +196,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
   public ChassisSpeeds getRobotRelativeSpeeds() 
   {
-    return DriveConstants.kDriveKinematics.toChassisSpeeds(getModuleStates());
+    return chassisSpeeds;
   }
 
 
@@ -238,7 +239,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
   public void resetSwervePoseEstimator(Pose2d pose)
   {
-    SwerveDrivePoseEstimator.resetPosition(gyro.getRotation2d(), new SwerveModulePosition[] {
+    SwerveDrivePoseEstimator.resetPosition(getRotation2d(), new SwerveModulePosition[] {
       frontLeft.getPosition(),
       frontRight.getPosition(),
       backLeft.getPosition(),
@@ -267,7 +268,7 @@ public class SwerveSubsystem extends SubsystemBase {
   @Override
 
   public void periodic() {
-    SwerveDrivePoseEstimator.update(gyro.getRotation2d(), new SwerveModulePosition[] {
+    SwerveDrivePoseEstimator.update(getRotation2d(), new SwerveModulePosition[] {
       frontLeft.getPosition(),
       frontRight.getPosition(),
       backLeft.getPosition(),
@@ -287,6 +288,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
     
     SmartDashboard.putData(m_field);
+    SmartDashboard.putNumber("GYRO", gyro.getAngle());
     SmartDashboard.putString("Robot Location (ODEMETER)", getPose().toString());
     SmartDashboard.putString("LimeLightPoseEstimate", SwerveDrivePoseEstimator.getEstimatedPosition().toString());
     
@@ -310,7 +312,7 @@ public class SwerveSubsystem extends SubsystemBase {
       {
         doRejectUpdate = true;
       }
-      if (mt2.avgTagDist < 0.5)
+      if (mt2.avgTagDist < 0.0)
       {
         doRejectUpdate =true;
       }

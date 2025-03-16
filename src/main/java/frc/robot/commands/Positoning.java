@@ -50,22 +50,22 @@ public class Positoning extends Command {
           finalPose = swerve.lastPose;
           break;
         case 6:
-          finalPose = new Pose2d(13.696, 2.900, Rotation2d.fromDegrees(-60));
+          finalPose = new Pose2d(13.696, 2.900, Rotation2d.fromDegrees(120));
           break;
         case 7:
-          finalPose = new Pose2d(14.368, 4.023, Rotation2d.fromDegrees(0));
+          finalPose = new Pose2d(14.368, 4.023, Rotation2d.fromDegrees(180));
           break;
         case 8:
-          finalPose = new Pose2d(13.736, 5.152, Rotation2d.fromDegrees(60));
+          finalPose = new Pose2d(13.736, 5.152, Rotation2d.fromDegrees(-120));
           break;
         case 9:
-          finalPose = new Pose2d(12.411, 5.171, Rotation2d.fromDegrees(120));
+          finalPose = new Pose2d(12.411, 5.171, Rotation2d.fromDegrees(-60));
           break;
         case 10:
-          finalPose = new Pose2d(11.795, 4.023, Rotation2d.fromDegrees(-180));
+          finalPose = new Pose2d(11.795, 4.023, Rotation2d.fromDegrees(0));
           break;
         case 11:
-          finalPose = new Pose2d(12.421, 2.900, Rotation2d.fromDegrees(-120));
+          finalPose = new Pose2d(12.421, 2.900, Rotation2d.fromDegrees(60));
           break;
       }
 
@@ -111,10 +111,10 @@ public class Positoning extends Command {
       case right:
       offsetPosition = new Pose2d(
         (finalPose.getX()) + 
-        (Constants.AutoConstants.reef_offset_left * (Math.sin(finalPose.getRotation().getRadians()))), 
+        (Constants.AutoConstants.reef_offset_right * (Math.sin(finalPose.getRotation().getRadians()))), 
         
         finalPose.getY() - 
-        (Constants.AutoConstants.reef_offset_left* Math.cos(finalPose.getRotation().getRadians())), 
+        (Constants.AutoConstants.reef_offset_right* Math.cos(finalPose.getRotation().getRadians())), 
         
         finalPose.getRotation());
         

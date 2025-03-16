@@ -5,27 +5,109 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "Coral F Start"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Coral F Start"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "L3 Elevator"
+                }
+              }
+            ]
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "Coral F to HP"
+            "name": "L4 Elevator"
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "HP to D "
+            "name": "OutCoral"
           }
         },
         {
-          "type": "path",
+          "type": "wait",
           "data": {
-            "pathName": "D to HP"
+            "waitTime": 0.25
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Coral F to HP"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "BottomElevator"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "IntakeCoral"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "HP to D "
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "L4 Elevator"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "OutCoral"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "D to HP"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "BottomElevator"
+                }
+              }
+            ]
           }
         }
       ]
